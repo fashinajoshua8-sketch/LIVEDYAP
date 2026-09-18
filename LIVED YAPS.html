@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVED Yaps — Web3 Engagement & Security Hub</title>
+<style>
+:root{
+  --void:#050505;--surface:#111111;--surface2:#171717;--fg:#f6f1e8;
+  --muted:#9c9388;--line:#ffffff20;--brand:#ff6a00;--brand2:#ff8a33;
+  --seal:#c4162a;--good:#4ade80;--warn:#ffc857;--code:#09090b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--void);color:var(--fg);font-family:Arial,Helvetica,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.shell{max-width:1180px;margin:auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:20;background:#050505ee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.navin{height:68px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;letter-spacing:2px;font-size:23px}
+.logo span{color:var(--brand)}
+.navlinks{display:flex;gap:7px;flex-wrap:wrap}
+.navlinks button{border:1px solid transparent;background:transparent;color:var(--muted);padding:10px 13px;border-radius:8px}
+.navlinks button:hover,.navlinks button.active{color:var(--fg);border-color:var(--line);background:#ffffff08}
+.hero{padding:76px 0 45px;display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center}
+.kicker{color:var(--brand2);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(45px,7vw,82px);line-height:.9;margin:12px 0 20px;letter-spacing:-3px}
+h2{margin:0 0 12px}
+p{color:var(--muted);line-height:1.65}
+.hero p{max-width:680px;font-size:17px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:12px 16px;border-radius:9px;font-weight:800}
+.btn.primary{background:var(--brand);color:#0a0a0a;border-color:var(--brand)}
+.btn.danger{background:var(--seal);color:#fff;border-color:var(--seal)}
+.btn.success{background:var(--good);color:#0a0a0a;border-color:var(--good)}
+.btn:hover{transform:translateY(-1px)}
+.card{background:linear-gradient(145deg,#151515,#0d0d0d);border:1px solid var(--line);border-radius:14px;padding:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
+.stat{background:#ffffff06;border:1px solid var(--line);padding:15px;border-radius:10px}
+.stat b{font-size:22px;display:block;margin-bottom:4px}
+.section{padding:35px 0 70px}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}
+.sectionhead p{margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.campaign{display:flex;flex-direction:column;min-height:230px}
+.badge{display:inline-flex;align-self:flex-start;padding:5px 8px;border-radius:999px;background:#ff6a0018;color:var(--brand2);font-size:11px;font-weight:800;margin-bottom:12px}
+.campaign .bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:end;gap:10px}
+.small{font-size:12px;color:var(--muted)}
+.progress{height:7px;background:#ffffff0d;border-radius:99px;overflow:hidden;margin:12px 0}
+.progress i{display:block;height:100%;background:var(--brand);width:0}
+.view{display:none}.view.active{display:block}
+.panel{max-width:850px;margin:35px auto 70px}
+.form{display:grid;gap:12px}
+label{font-size:12px;color:var(--muted);font-weight:700}
+input,textarea,select{width:100%;background:#0b0b0b;border:1px solid var(--line);color:var(--fg);padding:12px;border-radius:8px;outline:none}
+textarea{min-height:100px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:#ff6a0066}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.notice{padding:13px;border:1px solid #ff6a0035;background:#ff6a000b;border-radius:9px;color:#d8d0c6;font-size:13px;line-height:1.5}
+.leaderboard{width:100%;border-collapse:collapse}
+.leaderboard th,.leaderboard td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line)}
+.leaderboard th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.rank{width:40px;font-weight:900}
+.score{color:var(--brand2);font-weight:900}
+.avatar{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#ffffff10;border:1px solid var(--line);margin-right:8px;font-size:11px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.metric{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}
+.metric:last-child{border-bottom:0}
+.fee-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.fee-box .stat b{font-size:18px}
+
+/* Arena & LIVED Badge Styles */
+.arena-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px}
+.arena-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all .2s ease}
+.arena-card:hover{border-color:var(--brand2)}
+.arena-card.completed{border-color:#4ade8055;background:#0d1810}
+.badge-tag{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase}
+.badge-danger{background:#c4162a22;color:#f87171;border:1px solid #c4162a55}
+.badge-warn{background:#ffc85722;color:#fcd34d;border:1px solid #ffc85755}
+.badge-good{background:#4ade8022;color:#4ade80;border:1px solid #4ade8055}
+.code-box{background:var(--code);border:1px solid #ffffff15;border-radius:8px;padding:14px;font-family:monospace;font-size:12px;color:#a3e635;overflow-x:auto;line-height:1.45;margin:12px 0}
+.debrief-box{background:#11151a;border-left:4px solid var(--brand);padding:16px;border-radius:0 8px 8px 0;margin-top:16px}
+.lived-card-preview{background:linear-gradient(135deg,#1f1a14,#0a0a0b);border:2px solid var(--brand);border-radius:16px;padding:24px;box-shadow:0 12px 30px #00000088;position:relative;overflow:hidden;max-width:460px;margin:20px auto;text-align:left}
+.card-chip{width:42px;height:30px;background:linear-gradient(90deg,#ffd700,#b8860b);border-radius:6px;margin-bottom:16px}
+.badge-pill{display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:900;letter-spacing:1px;margin-right:6px;margin-top:6px}
+.badge-auditor{background:#ff6a0033;border:1px solid var(--brand);color:var(--brand2)}
+.badge-recon{background:#38bdf833;border:1px solid #38bdf8;color:#7dd3fc}
+
+footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.shell{padding:0 15px}.navin{height:auto;padding:12px 0;align-items:flex-start;gap:10px}.navlinks{justify-content:flex-end}.navlinks button{padding:8px}.grid{grid-template-columns:1fr}.row,.fee-box,.stats{grid-template-columns:1fr}h1{letter-spacing:-2px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="shell navin">
+    <a class="logo" href="#" onclick="show('home');return false">LIVED <span>YAPS</span></a>
+    <div class="navlinks">
+      <button data-view="home" class="active">Home</button>
+      <button data-view="arena">#Arena</button>
+      <button data-view="cardView">LIVED Card</button>
+      <button data-view="campaigns">Campaigns</button>
+      <button data-view="create">Create Campaign</button>
+      <button data-view="dashboard">Dashboard</button>
+      <button data-view="rules">Rules</button>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+<section id="home" class="view active">
+  <div class="hero">
+    <div>
+      <div class="kicker">LIVED ecosystem · native engagement & security layer</div>
+      <h1>YAP.<br>COMPETE.<br>EARN.</h1>
+      <p>LIVED Yaps is a campaign marketplace where projects can fund marketing campaigns and independent contributors can compete for rewards based on meaningful engagement. Step into the #Arena to audit on-chain attack vectors and earn verified credentials.</p>
+      <div class="cta">
+        <button class="btn primary" onclick="show('arena')">Enter #Arena →</button>
+        <button class="btn" onclick="show('campaigns')">Explore Campaigns</button>
+        <button class="btn" onclick="show('create')">Create a Campaign</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="kicker">Example economics</div>
+      <h2>$200 Campaign</h2>
+      <div class="metric"><span>Total budget</span><b>$200</b></div>
+      <div class="metric"><span>LIVED fee · 10%</span><b>$20</b></div>
+      <div class="metric"><span>Contributor pool</span><b>$180</b></div>
+      <div class="notice">Campaign rules, scoring and reward distribution are visible to contributors before they join.</div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="homeCampaigns">0</b><span class="small">Active campaigns</span></div>
+    <div class="stat"><b id="homeYappers">0</b><span class="small">Independent contributors</span></div>
+    <div class="stat"><b id="homeVolume">$0</b><span class="small">Illustrative campaign volume</span></div>
+    <div class="stat"><b id="homeRevenue">$0</b><span class="small">LIVED platform fees</span></div>
+  </div>
+</section>
+
+<!-- #ARENA VIEW -->
+<section id="arena" class="view section">
+  <div class="sectionhead">
+    <div>
+      <div class="kicker">Interactive Simulation Layer</div>
+      <h2>Threat Recon Arena</h2>
+      <p>Analyze 8 real-world on-chain exploits across freeze authorities, unburned liquidity, drainers, and MEV frontrunners.</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="arenaXP">0 XP</b><span class="small">Total Auditor Reputation</span></div>
+    <div class="stat"><b id="arenaStreak">0</b><span class="small">Active Streak</span></div>
+    <div class="stat"><b id="arenaCompleted">0 / 8</b><span class="small">Threats Neutralized</span></div>
+    <div class="stat"><b id="arenaBadgesUnlocked">0 / 2</b><span class="small">Badges Unlocked</span></div>
+  </div>
+
+  <div id="arenaGrid" class="arena-grid"></div>
+</section>
+
+<!-- SCENARIO AUDIT DETAIL VIEW -->
+<section id="scenarioDetail" class="view section">
+  <div class="panel">
+    <button class="btn" onclick="show('arena')" style="margin-bottom:15px">← Back to Arena</button>
+    <div id="scenarioContent"></div>
+  </div>
+</section>
+
+<!-- VISUAL LIVED CARD VIEW -->
+<section id="cardView" class="view section">
+  <div class="panel" style="text-align:center">
+    <div class="kicker">Decentralized Credentials</div>
+    <h2>Visual LIVED Identity Card</h2>
+    <p>Client-side verified state rendering dynamically granted badges from on-chain threat simulations.</p>
+
+    <div class="lived-card-preview" id="livedCard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:900;letter-spacing:1.5px;color:var(--brand2);font-size:13px">LIVED CREDENTIAL CARD</span>
+        <span class="small" id="cardHandle">@contributor</span>
+      </div>
+      <div class="card-chip"></div>
+      <h3 style="margin:10px 0 4px;letter-spacing:-1px" id="cardRole">Novice Observer</h3>
+      <div class="small" id="cardStats">XP: 0 · 0 Neutralized · Streak: 0</div>
+      
+      <div style="margin-top:22px;border-top:1px solid #ffffff18;padding-top:14px">
+        <div class="small" style="margin-bottom:8px;font-weight:700">VERIFIED ACCREDITATIONS:</div>
+        <div id="badgesContainer">
+          <span class="small" style="font-style:italic">No badges unlocked. Complete scenarios in #Arena.</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="actions" style="justify-content:center;margin-top:20px">
+      <button class="btn primary" onclick="show('arena')">Inspect Scenarios</button>
+      <button class="btn" onclick="show('campaigns')">Browse Campaigns</button>
+    </div>
+  </div>
+</section>
+
+<section id="campaigns" class="view section">
+  <div class="sectionhead">
+    <div><div class="kicker">Marketplace</div><h2>Active Campaigns</h2></div>
+    <button class="btn primary" onclick="show('create')">+ Create</button>
+  </div>
+  <div id="campaignGrid" class="grid"></div>
+</section>
+
+<section id="create" class="view section">
+  <div class="panel">
+    <div class="kicker">Project portal</div>
+    <h2>Create a Campaign</h2>
+    <p>Set the campaign budget and rules. LIVED's 10% platform fee is calculated separately from the contributor reward pool.</p>
+    <form id="campaignForm" class="form">
+      <div class="row">
+        <div><label>Project / campaign name</label><input id="cName" required placeholder="e.g. NOVA Community Push"></div>
+        <div><label>Category</label><select id="cCategory"><option>Memecoin</option><option>DeFi</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Total campaign budget (USD)</label><input id="cBudget" type="number" min="50" step="1" value="200" required></div>
+        <div><label>Duration</label><select id="cDuration"><option>7 days</option><option>14 days</option><option>30 days</option></select></div>
+      </div>
+      <div><label>Campaign brief</label><textarea id="cBrief" required placeholder="What should contributors focus on?"></textarea></div>
+      <div class="card">
+        <div class="fee-box">
+          <div class="stat"><b id="calcTotal">$200</b><span class="small">Campaign budget</span></div>
+          <div class="stat"><b id="calcFee">$20</b><span class="small">LIVED fee · 10%</span></div>
+          <div class="stat"><b id="calcPool">$180</b><span class="small">Reward pool</span></div>
+        </div>
+        <div class="notice">MVP note: this prototype simulates campaign accounting. Real payment escrow and payouts should be added only after the campaign rules and backend are finalized.</div>
+      </div>
+      <button class="btn primary" type="submit">Launch Campaign</button>
+    </form>
+  </div>
+</section>
+
+<section id="rules" class="view section">
+  <div class="panel">
+    <div class="kicker">Community standards</div>
+    <h2>LIVED Yaps Rules</h2>
+    <p>These rules apply to contributors participating in campaigns on LIVED Yaps.</p>
+    <div class="card" style="margin-top:18px">
+      <div class="metric"><span>01 · One account</span><span class="small">Use your own account. No duplicate or account-farming.</span></div>
+      <div class="metric"><span>02 · No spam</span><span class="small">Avoid repetitive, copy-pasted or meaningless posts and replies.</span></div>
+      <div class="metric"><span>03 · No bots</span><span class="small">Automated engagement, scripts and artificial activity are prohibited.</span></div>
+      <div class="metric"><span>04 · No fake engagement</span><span class="small">Do not buy or manipulate likes, replies, followers or impressions.</span></div>
+      <div class="metric"><span>05 · Quality matters</span><span class="small">Meaningful engagement, relevance, consistency and useful interaction matter more than volume alone.</span></div>
+      <div class="metric"><span>06 · Follow campaign rules</span><span class="small">Each campaign may have additional requirements that must be followed.</span></div>
+      <div class="metric"><span>07 · No misleading claims</span><span class="small">Do not make false claims about a project, token, product, partnership or returns.</span></div>
+      <div class="metric"><span>08 · Respect others</span><span class="small">No harassment, threats, impersonation, hate speech or abusive behaviour.</span></div>
+      <div class="metric"><span>09 · Leaderboard review</span><span class="small">Rankings may be reviewed before final rewards are confirmed.</span></div>
+      <div class="metric"><span>10 · Reward eligibility</span><span class="small">Only contributors who meet the published campaign requirements are eligible.</span></div>
+    </div>
+    <div class="notice" style="margin-top:16px">Suspicious, fraudulent or manipulated activity may be excluded from scoring or rewards. Campaign-specific rules and reward terms are shown before participation.</div>
+  </div>
+</section>
+
+<section id="dashboard" class="view section">
+  <div class="sectionhead">
+    <div><div class="kicker">Campaign analytics</div><h2 id="dashTitle">Campaign Dashboard</h2></div>
+    <button class="btn" onclick="show('campaigns')">← Campaigns</button>
+  </div>
+  <div id="dashContent"></div>
+</section>
+
+<section id="campaignDetail" class="view section">
+  <div class="panel">
+    <div id="detailContent"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="shell">LIVED Yaps MVP · Native campaign, contributor & threat intelligence platform prototype</div>
+</footer>
+
+<script>
+const KEY="lived_yaps_mvp_v1";
+const ARENA_KEY="lived_arena_progress_v1";
+
+const ARENA_SCENARIOS = [
+  {
+    id: 1,
+    title: "SPL Token Freeze Authority",
+    type: "freeze keys",
+    severity: "CRITICAL",
+    snippet: `// Solana Token Program State
+MintAddress: 7xKXtg...9e1
+Supply: 1,000,000,000
+Decimals: 9
+MintAuthority: null (Renounced)
+FreezeAuthority: 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM [ACTIVE]`,
+    prompt: "On-chain inspection indicates Mint Authority was set to null, but Freeze Authority points to an unverified private key. What is your assessment?",
+    choiceThreat: "Malicious: Deployer can freeze arbitrary holder token accounts, preventing Raydium/Orca liquidation.",
+    choiceSafe: "Benign: Standard SPL configuration; token accounts can trade freely.",
+    correct: "threat",
+    debrief: "Freeze Key Mechanics: While mint authority is frequently revoked to inspire confidence, an active freeze authority permits the controlling keypair to execute FreezeAccount transactions on any user's Associated Token Account (ATA). This isolates the target, rendering tokens untransferable while the team drains liquidity pools."
+  },
+  {
+    id: 2,
+    title: "Uniswap v2 Unburned LP",
+    type: "unburned LP",
+    severity: "HIGH",
+    snippet: `// Liquidity Pool Contract State
+Pair: 0xa834...bf19 (PROJECT / WETH)
+Total LP Supply: 100,000 UNI-V2
+Burn Address (0x0...dead): 0 UNI-V2 (0%)
+Deployer EOA (0x442...c8a): 100,000 UNI-V2 (100%)
+Lock Duration: 0 blocks`,
+    prompt: "A project has deployed an AMM pair holding 100% of the minted LP tokens in the deployer's externally owned account (EOA).",
+    choiceThreat: "Malicious: The deployer can invoke removeLiquidity() at any time, instantly siphoning pooled ETH.",
+    choiceSafe: "Benign: Safe liquidity migration pattern typical during new protocol bootstrapping.",
+    correct: "threat",
+    debrief: "Unburned LP Mechanics: Without an immutable contract timelock (e.g., Unicrypt) or sending LP tokens to a provably unspendable address (such as 0x000...dead), the LP holder retains unilateral authority to burn their LP tokens back into the pair contract, extracting 100% of underlying base asset reserves (ETH/SOL)."
+  },
+  {
+    id: 3,
+    title: "ERC-2612 Gasless Permit Drainer",
+    type: "drainers",
+    severity: "CRITICAL",
+    snippet: `// Wallet Signature RPC Intercept (eth_signTypedData_v4)
+PrimaryType: Permit
+Message: {
+  owner: 0xUserWallet...18a,
+  spender: 0x991f8...33c (Malicious Proxy),
+  value: 115792089237316195423570985008687907853269984665640564039457584007913129639935,
+  nonce: 0,
+  deadline: 1893456000
+}`,
+    prompt: "A deceptive web airdrop claim requests an off-chain cryptographic signature for a gasless 'Permit' voucher.",
+    choiceThreat: "Malicious: Off-chain signature gives the spender unlimited allowance (uint256 max) to sweep tokens via transferFrom.",
+    choiceSafe: "Benign: Standard gasless sign-in credential to confirm wallet ownership.",
+    correct: "threat",
+    debrief: "Permit Drainer Mechanics: ERC-2612 introduces structured signatures (eth_signTypedData_v4) allowing approvals to be granted without an initial gas transaction. Attackers trick users into signing approvals for uint256.max. Relayers subsequently submit the signed authorization on-chain and execute transferFrom to siphon funds immediately."
+  },
+  {
+    id: 4,
+    title: "Mempool High-Slippage Sandwich",
+    type: "MEV bots",
+    severity: "MEDIUM",
+    snippet: `// Pending Transaction Inspection
+Function: swapExactTokensForTokens
+Path: [WETH -> $MOON]
+AmountIn: 25.0 ETH
+AmountOutMin: 120,000 $MOON (Allowed Slippage: 20.0%)
+Mempool Monitor: MEV bundle detected frontrunning with 120 Gwei, followed by target tx, and tail backrun.`,
+    prompt: "A large swap transaction is broadcast into the public mempool configured with 20% slippage tolerance during thin pool liquidity.",
+    choiceThreat: "Exploitable: MEV searcher nodes will execute a sandwich bundle to extract the full 20% slippage delta.",
+    choiceSafe: "Optimal: Maximizes execution likelihood across congested EVM network blocks.",
+    correct: "threat",
+    debrief: "MEV Bot Mechanics: When transactions declare wide slippage margins in public mempools, MEV searchers construct an atomic 3-transaction bundle via Flashbots/private relays: 1) Buy immediately before the victim at higher gas, pushing token spot price up to the user's limit; 2) Victim executes at worst price; 3) Back-run sell order offloads tokens at higher valuations."
+  },
+  {
+    id: 5,
+    title: "Stealth Mint Function Hook",
+    type: "hidden mint",
+    severity: "CRITICAL",
+    snippet: `// Decompiled Contract Bytecode
+function mint(address to, uint256 amount) public onlyOwner { revert("Renounced"); }
+
+function claimFounderAllocation(bytes32 node) public {
+    if (msg.sender == _hiddenSigner) {
+        _totalSupply += 500000000 * 10**18;
+        _balances[_hiddenSigner] += 500000000 * 10**18;
+    }
+}`,
+    prompt: "The explicit mint function throws an error, but decompiled bytecode exposes an auxiliary function generating token supply to a hidden address.",
+    choiceThreat: "Malicious: Contract possesses a hidden backdoor to inflate supply and dump unbacked tokens on holders.",
+    choiceSafe: "Benign: Standard deferred vesting allocation for initial core contributors.",
+    correct: "threat",
+    debrief: "Hidden Mint Mechanics: Attackers frequently advertise that the standard ERC20/SPL mint() method has been renounced or disabled, while introducing disguised auxiliary functions with alternative names like claimFounderAllocation() or sync() that alter total supply and balance storage directly without emitting standard events."
+  },
+  {
+    id: 6,
+    title: "Dynamic Transfer Hook Honeypot",
+    type: "honeypot",
+    severity: "CRITICAL",
+    snippet: `// Transfer Execution Hook
+function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+    super._beforeTokenTransfer(from, to, amount);
+    if (to == uniswapV2Pair && from != owner()) {
+        require(isApprovedSeller[from], "ERR_ROUTER_EXCHANGE_DISABLED");
+    }
+}`,
+    prompt: "Users are able to purchase tokens on decentralized exchanges, but every outbound sell swap transaction reverts.",
+    choiceThreat: "Malicious: Honeypot code explicitly enforces whitelist requirements on trades where the recipient is the DEX pair.",
+    choiceSafe: "Benign: Standard bot-sniper throttle active only during the first 10 minutes of launch.",
+    correct: "threat",
+    debrief: "Honeypot Transfer Hook Mechanics: The token implements asymmetric transfer rules: purchasing transfers tokens from pair to user successfully, but selling requires transferring from user to pair, where to == pair triggers a conditional revert unless from is an approved insider address. Liquidity becomes a one-way sink."
+  },
+  {
+    id: 7,
+    title: "Zero-Value Address Spoofing",
+    type: "drainers",
+    severity: "LOW",
+    snippet: `// Ledger History Stream
+TxHash: 0x48e...09d
+Method: transferFrom(from: 0xUserWallet...021, to: 0x93FA...a90C, amount: 0)
+Vanity Match: Target address matches first 4 and last 4 characters of regular counterparty.`,
+    prompt: "An unprompted zero-value transaction appears in the wallet history matching the prefix and suffix of your frequent transfer contact.",
+    choiceThreat: "Malicious: Address poisoning exploit intended to trick you into copying the scammer address from tx history.",
+    choiceSafe: "Benign: Regular gasless network ping initiated by node balance indexers.",
+    correct: "threat",
+    debrief: "Address Poisoning Mechanics: Because many ERC-20 token contracts permit calling transferFrom(victim, attacker, 0) without approvals (since amount is 0), scammers flood a target's history with vanity addresses visually matching common transfer recipients, exploiting user reliance on copying destination addresses from transaction history."
+  },
+  {
+    id: 8,
+    title: "Timelock Delay Bypass Vulnerability",
+    type: "governance exploit",
+    severity: "HIGH",
+    snippet: `// Timelock Controller State
+function execute(address target, bytes calldata data, bytes32 salt) external payable {
+    bytes32 txHash = keccak256(abi.encode(target, data, salt));
+    // require(block.timestamp >= timestamps[txHash] + minDelay, "DelayPending");
+    require(queued[txHash], "NotQueued");
+    target.call{value: msg.value}(data);
+}`,
+    prompt: "Timelock execution logic queues proposals but has its minimum delay verification commented out or omitted.",
+    choiceThreat: "Malicious: Any compromised proposer or admin role can queue and execute malicious contract changes in a single block.",
+    choiceSafe: "Benign: Gas optimization designed to facilitate rapid protocol bug patching.",
+    correct: "threat",
+    debrief: "Timelock Bypass Mechanics: Decentralized timelocks enforce a mandatory delay (e.g., 48 hours) between queuing an administrative action and executing it, providing stakeholders time to evaluate or exit. Removing block.timestamp checks allows privileged or compromised keys to execute contract migrations without community warning."
+  }
+];
+
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||{
+  campaigns:[
+    {id:1,name:"NOVA Community Push",category:"Memecoin",budget:200,duration:"30 days",
+     brief:"Create useful conversations around NOVA and introduce the project to relevant communities.",
+     contributors:12,joined:false,
+     yappers:[
+       ["@chainlens",94,13200,420],["@solanaScout",88,9100,310],["@DeFiNerd",82,7600,244],
+       ["@alphaTrace",77,6900,198],["@blockbyte",71,5200,151],["@onchainjay",65,4800,122]
+     ]},
+    {id:2,name:"Orbit AI Awareness",category:"AI",budget:350,duration:"14 days",
+     brief:"Explain the product, share educational content and drive informed discussion.",
+     contributors:27,joined:false,
+     yappers:[
+       ["@orbitmax",97,20100,580],["@aiScout",91,15300,420],["@buildwithme",86,12100,331],
+       ["@vectorx",79,10400,270],["@web3sage",73,8700,210]
+     ]},
+    {id:3,name:"SOL DeFi Discovery",category:"DeFi",budget:500,duration:"30 days",
+     brief:"Create educational discussion around the protocol's DeFi utility and ecosystem.",
+     contributors:41,joined:false,
+     yappers:[
+       ["@defiAlpha",96,24400,701],["@yieldmap",92,18900,520],["@solflow",89,16800,480],
+       ["@liquidityLab",83,13100,352],["@chainpilot",76,11200,298]
+     ]}
+  ]
+};
+
+let arenaState = JSON.parse(localStorage.getItem(ARENA_KEY) || "null") || {
+  xp: 0,
+  streak: 1,
+  completedScenarios: [],
+  lastActiveDate: new Date().toDateString()
+};
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(db));
+  localStorage.setItem(ARENA_KEY,JSON.stringify(arenaState));
+  renderArenaStats();
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function money(n){return "$"+Number(n).toLocaleString(undefined,{maximumFractionDigits:2})}
+
+function show(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  const v=document.getElementById(id); if(v)v.classList.add("active");
+  document.querySelectorAll(".navlinks button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+  if(id==="campaigns")renderCampaigns();
+  if(id==="home")renderHome();
+  if(id==="arena"){renderArenaGrid();renderArenaStats();}
+  if(id==="cardView")renderLivedCard();
+  if(id==="dashboard")renderDashboard(db.campaigns[0]?.id);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".navlinks button").forEach(b=>b.onclick=()=>show(b.dataset.view));
+
+function evaluateBadges(){
+  const badges = [];
+  if(arenaState.completedScenarios.length >= 4){
+    badges.push("LEDGER AUDITOR");
+  }
+  if(arenaState.completedScenarios.length === 8 && arenaState.streak >= 1){
+    badges.push("RECON MASTER");
+  }
+  return badges;
+}
+
+function renderArenaStats(){
+  document.getElementById("arenaXP").textContent = arenaState.xp + " XP";
+  document.getElementById("arenaStreak").textContent = arenaState.streak;
+  document.getElementById("arenaCompleted").textContent = arenaState.completedScenarios.length + " / 8";
+  const badges = evaluateBadges();
+  document.getElementById("arenaBadgesUnlocked").textContent = badges.length + " / 2";
+}
+
+function renderArenaGrid(){
+  const grid = document.getElementById("arenaGrid");
+  grid.innerHTML = ARENA_SCENARIOS.map((s, i) => {
+    const isDone = arenaState.completedScenarios.includes(s.id);
+    const sevClass = s.severity === "CRITICAL" ? "badge-danger" : s.severity === "HIGH" ? "badge-warn" : "badge-good";
+    return `
+      <article class="arena-card ${isDone ? 'completed' : ''}">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="small" style="font-weight:700">VECTOR #${i+1}</span>
+            <span class="badge-tag ${sevClass}">${s.severity}</span>
+          </div>
+          <h3 style="margin:4px 0">${esc(s.title)}</h3>
+          <span class="small" style="color:var(--brand2);text-transform:uppercase;font-weight:700">${esc(s.type)}</span>
+          <p style="font-size:13px;margin:10px 0">${esc(s.prompt)}</p>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn ${isDone ? 'success' : 'primary'}" style="width:100%" onclick="openScenario(${s.id})">
+            ${isDone ? '✓ Solved · Inspect Debrief' : 'Inspect Threat →'}
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function openScenario(id){
+  const s = ARENA_SCENARIOS.find(x => x.id === id);
+  if(!s) return;
+  const isDone = arenaState.completedScenarios.includes(s.id);
+
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("scenarioDetail").classList.add("active");
+  document.querySelectorAll(".navlinks button").forEach(b => b.classList.remove("active"));
+
+  document.getElementById("scenarioContent").innerHTML = `
+    <div class="kicker">${esc(s.severity)} SEVERITY · ${esc(s.type).toUpperCase()}</div>
+    <h2>${esc(s.title)}</h2>
+    <p>${esc(s.prompt)}</p>
+    
+    <div class="small" style="font-weight:700;margin-top:15px">ON-CHAIN LEDGER STATE:</div>
+    <pre class="code-box">${esc(s.snippet)}</pre>
+
+    <div style="margin:20px 0">
+      ${isDone ? `
+        <div class="debrief-box">
+          <h4 style="margin:0 0 8px;color:var(--brand2)">⚡ ON-CHAIN LEDGER DEBRIEF</h4>
+          <p style="margin:0;font-size:14px;color:var(--fg);line-height:1.6">${esc(s.debrief)}</p>
+        </div>
+      ` : `
+        <label>SUBMIT AUDITOR CLASSIFICATION:</label>
+        <div style="display:grid;gap:10px;margin-top:12px">
+          <button class="btn danger" onclick="submitScenario(${s.id}, 'threat')">🚨 Flag Threat: ${esc(s.choiceThreat)}</button>
+          <button class="btn" onclick="submitScenario(${s.id}, 'safe')">🛡️ Mark Safe: ${esc(s.choiceSafe)}</button>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function submitScenario(id, answer){
+  const s = ARENA_SCENARIOS.find(x => x.id === id);
+  if(!s) return;
+
+  if(answer === s.correct){
+    if(!arenaState.completedScenarios.includes(s.id)){
+      arenaState.completedScenarios.push(s.id);
+      arenaState.xp += 150;
+      save();
+    }
+    openScenario(id);
+  } else {
+    alert("Incorrect classification. Analyze the state variables and privilege signatures carefully.");
+  }
+}
+
+function renderLivedCard(){
+  const badges = evaluateBadges();
+  document.getElementById("cardStats").textContent = `XP: ${arenaState.xp} · ${arenaState.completedScenarios.length}/8 Neutralized · Streak: ${arenaState.streak}`;
+
+  const roleEl = document.getElementById("cardRole");
+  if(badges.includes("RECON MASTER")){
+    roleEl.textContent = "Lead Recon Master";
+  } else if(badges.includes("LEDGER AUDITOR")){
+    roleEl.textContent = "Certified Ledger Auditor";
+  } else {
+    roleEl.textContent = "Novice Observer";
+  }
+
+  const container = document.getElementById("badgesContainer");
+  if(!badges.length){
+    container.innerHTML = `<span class="small" style="font-style:italic">Resolve 4 threats in #Arena to unlock LEDGER AUDITOR.</span>`;
+  } else {
+    container.innerHTML = badges.map(b => {
+      const cls = b === "LEDGER AUDITOR" ? "badge-auditor" : "badge-recon";
+      return `<span class="badge-pill ${cls}">🛡️ ${esc(b)}</span>`;
+    }).join("");
+  }
+}
+
+function renderHome(){
+  document.getElementById("homeCampaigns").textContent=db.campaigns.length;
+  const contributors=db.campaigns.reduce((a,c)=>a+c.contributors,0);
+  const volume=db.campaigns.reduce((a,c)=>a+Number(c.budget),0);
+  document.getElementById("homeYappers").textContent=contributors;
+  document.getElementById("homeVolume").textContent=money(volume);
+  document.getElementById("homeRevenue").textContent=money(volume*.10);
+}
+
+function renderCampaigns(){
+  const grid=document.getElementById("campaignGrid");
+  grid.innerHTML=db.campaigns.map(c=>{
+    const pool=Number(c.budget)*.9;
+    return `<article class="card campaign">
+      <span class="badge">${esc(c.category)} · ${esc(c.duration)}</span>
+      <h2>${esc(c.name)}</h2>
+      <p>${esc(c.brief)}</p>
+      <div class="progress"><i style="width:${Math.min(95,(c.contributors/60)*100)}%"></i></div>
+      <div class="bottom">
+        <div><div class="small">Reward pool</div><b>${money(pool)}</b><div class="small">${c.contributors} contributors</div></div>
+        <div class="actions"><button class="btn" onclick="openCampaign(${c.id})">View</button><button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined":"Join"}</button></div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function openCampaign(id){
+  const c=db.campaigns.find(x=>x.id===id); if(!c)return;
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("campaignDetail").classList.add("active");
+  document.querySelectorAll(".navlinks button").forEach(b=>b.classList.remove("active"));
+  const pool=Number(c.budget)*.9;
+  document.getElementById("detailContent").innerHTML=`
+    <div class="kicker">${esc(c.category)} · ${esc(c.duration)}</div>
+    <h2>${esc(c.name)}</h2>
+    <p>${esc(c.brief)}</p>
+    <div class="fee-box">
+      <div class="stat"><b>${money(c.budget)}</b><span class="small">Campaign budget</span></div>
+      <div class="stat"><b>${money(c.budget*.1)}</b><span class="small">LIVED fee · 10%</span></div>
+      <div class="stat"><b>${money(pool)}</b><span class="small">Reward pool</span></div>
+    </div>
+    <div class="notice">Leaderboard scores in this MVP are illustrative. Production scoring should use verified platform data and published campaign rules.</div>
+    <h3 style="margin-top:28px">Top contributors</h3>
+    ${leaderboardHTML(c)}
+    <div class="actions" style="margin-top:18px"><button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined campaign":"Join campaign"}</button><button class="btn" onclick="show('campaigns')">Back</button></div>
+  `;
+}
+
+function leaderboardHTML(c){
+  const rows=(c.yappers||[]).map((y,i)=>`<tr><td class="rank">#${i+1}</td><td><span class="avatar">${esc(y[0].replace("@","").slice(0,2).toUpperCase())}</span>${esc(y[0])}</td><td class="score">${y[1]}</td><td>${Number(y[2]).toLocaleString()}</td><td>${y[3]}</td></tr>`).join("");
+  return `<table class="leaderboard"><thead><tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th></tr></thead><tbody>${rows||'<tr><td colspan="5">No contributors yet.</td></tr>'}</tbody></table>`;
+}
+
+function joinCampaign(id){
+  const c=db.campaigns.find(x=>x.id===id); if(!c)return;
+  if(!c.joined){
+    c.joined=true;
+    c.contributors+=1;
+    c.yappers=c.yappers||[];
+    c.yappers.push(["@contributor", Math.floor(65+Math.random()*20), Math.floor(2000+Math.random()*4000), Math.floor(50+Math.random()*150)]);
+    save();
+  }
+  openCampaign(id);
+}
+
+function renderDashboard(id){
+  const c=db.campaigns.find(x=>x.id===id) || db.campaigns[0];
+  if(!c) return;
+  document.getElementById("dashTitle").textContent=c.name;
+  document.getElementById("dashContent").innerHTML=`
+    <div class="stats">
+      <div class="stat"><b>${money(c.budget)}</b><span class="small">Campaign budget</span></div>
+      <div class="stat"><b>${money(c.budget*.9)}</b><span class="small">Contributor pool</span></div>
+      <div class="stat"><b>${c.contributors}</b><span class="small">Participants</span></div>
+      <div class="stat"><b>${money(c.budget*.1)}</b><span class="small">LIVED fee</span></div>
+    </div>
+    <div class="card" style="margin-top:15px">
+      <h3>Leaderboard — ${esc(c.name)}</h3>
+      ${leaderboardHTML(c)}
+    </div>`;
+}
+
+document.getElementById("cBudget").addEventListener("input",e=>{
+  const n=Math.max(0,Number(e.target.value)||0);
+  document.getElementById("calcTotal").textContent=money(n);
+  document.getElementById("calcFee").textContent=money(n*.1);
+  document.getElementById("calcPool").textContent=money(n*.9);
+});
+
+document.getElementById("campaignForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const budget=Number(document.getElementById("cBudget").value);
+  const c={
+    id:Date.now(),
+    name:document.getElementById("cName").value.trim(),
+    category:document.getElementById("cCategory").value,
+    budget,
+    duration:document.getElementById("cDuration").value,
+    brief:document.getElementById("cBrief").value.trim(),
+    contributors:0,
+    joined:false,
+    yappers:[]
+  };
+  db.campaigns.unshift(c);
+  save();
+  e.target.reset();
+  document.getElementById("cBudget").value=200;
+  document.getElementById("calcTotal").textContent="$200";
+  document.getElementById("calcFee").textContent="$20";
+  document.getElementById("calcPool").textContent="$180";
+  show("campaigns");
+});
+
+const currentDay = new Date().toDateString();
+if(arenaState.lastActiveDate !== currentDay){
+  arenaState.streak += 1;
+  arenaState.lastActiveDate = currentDay;
+  save();
+}
+
+renderHome();
+renderCampaigns();
+renderArenaStats();
+</script>
+</body>
+</html>
