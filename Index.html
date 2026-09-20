@@ -819,7 +819,7 @@ async function redirectToXOAuth() {
     sessionStorage.setItem("x_pkce_verifier", verifier);
     sessionStorage.setItem("x_pkce_state", state);
 
-    const redirectUri = http://localhost:500;
+    const redirectUri = "https://livedyaps.netlify.app/";
     const scope = "tweet.read users.read";
 
     const authUrl = `https://twitter.com/i/oauth2/authorize?` +
