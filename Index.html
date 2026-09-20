@@ -819,8 +819,8 @@ async function redirectToXOAuth() {
     sessionStorage.setItem("x_pkce_verifier", verifier);
     sessionStorage.setItem("x_pkce_state", state);
 
-    const redirectUri = window.location.origin + window.location.pathname;
-    const scope = "tweet.read users.read offline.access";
+    const redirectUri = http://localhost:500;
+    const scope = "tweet.read users.read";
 
     const authUrl = `https://twitter.com/i/oauth2/authorize?` +
       `response_type=code` +
