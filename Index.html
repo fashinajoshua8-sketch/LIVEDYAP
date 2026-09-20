@@ -3,16 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIVED Yaps — Web3 Engagement & Security Hub</title>
+<title>LIVED Yaps — Web3 Engagement, Identity & Admin Hub</title>
 <style>
 :root{
   --void:#050505;--surface:#111111;--surface2:#171717;--fg:#f6f1e8;
   --muted:#9c9388;--line:#ffffff20;--brand:#ff6a00;--brand2:#ff8a33;
-  --seal:#c4162a;--good:#4ade80;--warn:#ffc857;--code:#09090b;
+  --seal:#c4162a;--good:#4ade80;--warn:#ffc857;--gold:#ffd700;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--void);color:var(--fg);font-family:Arial,Helvetica,sans-serif}
+body{
+  margin:0;
+  background-color:var(--void);
+  background-image:
+    radial-gradient(circle at 50% 30%, rgba(5, 5, 5, 0.88), rgba(5, 5, 5, 0.98) 75%),
+    url("lived-seal.jpeg");
+  background-repeat:repeat;
+  background-position:center top;
+  background-size:cover, 480px auto;
+  background-attachment:fixed;
+  color:var(--fg);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 a{color:inherit;text-decoration:none}
@@ -33,18 +46,18 @@ p{color:var(--muted);line-height:1.65}
 .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
 .btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:12px 16px;border-radius:9px;font-weight:800}
 .btn.primary{background:var(--brand);color:#0a0a0a;border-color:var(--brand)}
-.btn.danger{background:var(--seal);color:#fff;border-color:var(--seal)}
 .btn.success{background:var(--good);color:#0a0a0a;border-color:var(--good)}
+.btn.danger{background:var(--seal);color:#fff;border-color:var(--seal)}
 .btn:hover{transform:translateY(-1px)}
-.card{background:linear-gradient(145deg,#151515,#0d0d0d);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card{background:linear-gradient(145deg,rgba(21,21,21,0.92),rgba(13,13,13,0.95));border:1px solid var(--line);border-radius:14px;padding:22px;backdrop-filter:blur(6px)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
-.stat{background:#ffffff06;border:1px solid var(--line);padding:15px;border-radius:10px}
+.stat{background:rgba(255,255,255,0.04);border:1px solid var(--line);padding:15px;border-radius:10px;backdrop-filter:blur(4px)}
 .stat b{font-size:22px;display:block;margin-bottom:4px}
 .section{padding:35px 0 70px}
 .sectionhead{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}
 .sectionhead p{margin:0}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.campaign{display:flex;flex-direction:column;min-height:230px}
+.campaign{display:flex;flex-direction:column;min-height:240px}
 .badge{display:inline-flex;align-self:flex-start;padding:5px 8px;border-radius:999px;background:#ff6a0018;color:var(--brand2);font-size:11px;font-weight:800;margin-bottom:12px}
 .campaign .bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:end;gap:10px}
 .small{font-size:12px;color:var(--muted)}
@@ -58,11 +71,11 @@ input,textarea,select{width:100%;background:#0b0b0b;border:1px solid var(--line)
 textarea{min-height:100px;resize:vertical}
 input:focus,textarea:focus,select:focus{border-color:#ff6a0066}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.notice{padding:13px;border:1px solid #ff6a0035;background:#ff6a000b;border-radius:9px;color:#d8d0c6;font-size:13px;line-height:1.5}
+.notice{padding:13px;border:1px solid #ff6a0035;background:rgba(255,106,0,0.06);border-radius:9px;color:#d8d0c6;font-size:13px;line-height:1.5;backdrop-filter:blur(4px)}
 .leaderboard{width:100%;border-collapse:collapse}
 .leaderboard th,.leaderboard td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line)}
 .leaderboard th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.rank{width:40px;font-weight:900}
+.rank{width:50px;font-weight:900}
 .score{color:var(--brand2);font-weight:900}
 .avatar{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#ffffff10;border:1px solid var(--line);margin-right:8px;font-size:11px}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -70,25 +83,42 @@ input:focus,textarea:focus,select:focus{border-color:#ff6a0066}
 .metric:last-child{border-bottom:0}
 .fee-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
 .fee-box .stat b{font-size:18px}
+.top-podium{background:linear-gradient(135deg,rgba(31,26,20,0.95),rgba(20,20,22,0.95));border:1px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(6px)}
+.top-podium .crown{font-size:28px;margin-right:12px}
+.filter-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.filter-tabs button{background:rgba(20,20,20,0.7);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700}
+.filter-tabs button.active,.filter-tabs button:hover{color:var(--fg);border-color:var(--brand);background:#ff6a0015}
 
-/* Arena & LIVED Badge Styles */
-.arena-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px}
-.arena-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all .2s ease}
-.arena-card:hover{border-color:var(--brand2)}
-.arena-card.completed{border-color:#4ade8055;background:#0d1810}
-.badge-tag{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase}
-.badge-danger{background:#c4162a22;color:#f87171;border:1px solid #c4162a55}
-.badge-warn{background:#ffc85722;color:#fcd34d;border:1px solid #ffc85755}
-.badge-good{background:#4ade8022;color:#4ade80;border:1px solid #4ade8055}
-.code-box{background:var(--code);border:1px solid #ffffff15;border-radius:8px;padding:14px;font-family:monospace;font-size:12px;color:#a3e635;overflow-x:auto;line-height:1.45;margin:12px 0}
-.debrief-box{background:#11151a;border-left:4px solid var(--brand);padding:16px;border-radius:0 8px 8px 0;margin-top:16px}
-.lived-card-preview{background:linear-gradient(135deg,#1f1a14,#0a0a0b);border:2px solid var(--brand);border-radius:16px;padding:24px;box-shadow:0 12px 30px #00000088;position:relative;overflow:hidden;max-width:460px;margin:20px auto;text-align:left}
-.card-chip{width:42px;height:30px;background:linear-gradient(90deg,#ffd700,#b8860b);border-radius:6px;margin-bottom:16px}
+/* LIVED Card Visual Styling - Centered Watermark */
+.lived-card-container{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(20,16,12,0.86), rgba(8,8,9,0.95)),
+    url("lived-seal.jpeg");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:cover, 310px 310px;
+  border:2px solid var(--brand);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.85);
+  position:relative;
+  overflow:hidden;
+  max-width:500px;
+  margin:25px auto;
+  text-align:left;
+}
+.card-top-bar{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.card-chip{width:46px;height:32px;background:linear-gradient(90deg,#ffd700,#b8860b);border-radius:6px;margin:16px 0;position:relative;z-index:2}
+.card-body-content{position:relative;z-index:2}
 .badge-pill{display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:900;letter-spacing:1px;margin-right:6px;margin-top:6px}
-.badge-auditor{background:#ff6a0033;border:1px solid var(--brand);color:var(--brand2)}
-.badge-recon{background:#38bdf833;border:1px solid #38bdf8;color:#7dd3fc}
+.badge-creator{background:#ff6a0025;border:1px solid var(--brand);color:var(--brand2)}
+.badge-verified{background:#4ade8025;border:1px solid var(--good);color:var(--good)}
+.badge-lead{background:#ffd70025;border:1px solid var(--gold);color:var(--gold)}
+.badge-legend{background:#38bdf825;border:1px solid #38bdf8;color:#7dd3fc}
+.level-bar{height:6px;background:#ffffff15;border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.level-bar-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--gold));width:10%;transition:width .3s}
 
-footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px}
+footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px;background:rgba(5,5,5,0.85)}
 @media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.shell{padding:0 15px}.navin{height:auto;padding:12px 0;align-items:flex-start;gap:10px}.navlinks{justify-content:flex-end}.navlinks button{padding:8px}.grid{grid-template-columns:1fr}.row,.fee-box,.stats{grid-template-columns:1fr}h1{letter-spacing:-2px}}
 </style>
@@ -100,11 +130,10 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
     <a class="logo" href="#" onclick="show('home');return false">LIVED <span>YAPS</span></a>
     <div class="navlinks">
       <button data-view="home" class="active">Home</button>
-      <button data-view="arena">#Arena</button>
-      <button data-view="cardView">LIVED Card</button>
       <button data-view="campaigns">Campaigns</button>
       <button data-view="create">Create Campaign</button>
-      <button data-view="dashboard">Dashboard</button>
+      <button data-view="cardView">LIVED Card</button>
+      <button data-view="dashboard">Project Dashboard</button>
       <button data-view="rules">Rules</button>
     </div>
   </div>
@@ -115,127 +144,179 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 <section id="home" class="view active">
   <div class="hero">
     <div>
-      <div class="kicker">LIVED ecosystem · native engagement & security layer</div>
+      <div class="kicker">LIVED ecosystem · native engagement layer</div>
       <h1>YAP.<br>COMPETE.<br>EARN.</h1>
-      <p>LIVED Yaps is a campaign marketplace where projects can fund marketing campaigns and independent contributors can compete for rewards based on meaningful engagement. Step into the #Arena to audit on-chain attack vectors and earn verified credentials.</p>
+      <p>LIVED Yaps connects Web3 projects with independent content creators. Discover community campaigns, generate engagement, climb the leaderboard, and unlock verified credentials on your LIVED Card pass.</p>
       <div class="cta">
-        <button class="btn primary" onclick="show('arena')">Enter #Arena →</button>
-        <button class="btn" onclick="show('campaigns')">Explore Campaigns</button>
+        <button class="btn primary" onclick="show('campaigns')">Explore Campaigns →</button>
+        <button class="btn" onclick="show('cardView')">View LIVED Card</button>
         <button class="btn" onclick="show('create')">Create a Campaign</button>
       </div>
     </div>
     <div class="card">
-      <div class="kicker">Example economics</div>
-      <h2>$200 Campaign</h2>
-      <div class="metric"><span>Total budget</span><b>$200</b></div>
-      <div class="metric"><span>LIVED fee · 10%</span><b>$20</b></div>
-      <div class="metric"><span>Contributor pool</span><b>$180</b></div>
-      <div class="notice">Campaign rules, scoring and reward distribution are visible to contributors before they join.</div>
+      <div class="kicker">Platform Revenue Model</div>
+      <h2>Sustainable Split</h2>
+      <div class="metric"><span>Total Campaign Budget</span><b>100%</b></div>
+      <div class="metric"><span>LIVED Protocol Fee</span><b>10%</b></div>
+      <div class="metric"><span>Yapper Contributor Pool</span><b>90%</b></div>
+      <div class="notice">Campaigns require admin validation before distribution. Anti-abuse limits safeguard reward pools.</div>
     </div>
   </div>
   <div class="stats">
     <div class="stat"><b id="homeCampaigns">0</b><span class="small">Active campaigns</span></div>
     <div class="stat"><b id="homeYappers">0</b><span class="small">Independent contributors</span></div>
     <div class="stat"><b id="homeVolume">$0</b><span class="small">Illustrative campaign volume</span></div>
-    <div class="stat"><b id="homeRevenue">$0</b><span class="small">LIVED platform fees</span></div>
+    <div class="stat"><b id="homeRevenue">$0</b><span class="small">LIVED Protocol Revenue (10%)</span></div>
   </div>
 </section>
 
-<!-- #ARENA VIEW -->
-<section id="arena" class="view section">
-  <div class="sectionhead">
-    <div>
-      <div class="kicker">Interactive Simulation Layer</div>
-      <h2>Threat Recon Arena</h2>
-      <p>Analyze 8 real-world on-chain exploits across freeze authorities, unburned liquidity, drainers, and MEV frontrunners.</p>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><b id="arenaXP">0 XP</b><span class="small">Total Auditor Reputation</span></div>
-    <div class="stat"><b id="arenaStreak">0</b><span class="small">Active Streak</span></div>
-    <div class="stat"><b id="arenaCompleted">0 / 8</b><span class="small">Threats Neutralized</span></div>
-    <div class="stat"><b id="arenaBadgesUnlocked">0 / 2</b><span class="small">Badges Unlocked</span></div>
-  </div>
-
-  <div id="arenaGrid" class="arena-grid"></div>
-</section>
-
-<!-- SCENARIO AUDIT DETAIL VIEW -->
-<section id="scenarioDetail" class="view section">
-  <div class="panel">
-    <button class="btn" onclick="show('arena')" style="margin-bottom:15px">← Back to Arena</button>
-    <div id="scenarioContent"></div>
-  </div>
-</section>
-
-<!-- VISUAL LIVED CARD VIEW -->
-<section id="cardView" class="view section">
-  <div class="panel" style="text-align:center">
-    <div class="kicker">Decentralized Credentials</div>
-    <h2>Visual LIVED Identity Card</h2>
-    <p>Client-side verified state rendering dynamically granted badges from on-chain threat simulations.</p>
-
-    <div class="lived-card-preview" id="livedCard">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-weight:900;letter-spacing:1.5px;color:var(--brand2);font-size:13px">LIVED CREDENTIAL CARD</span>
-        <span class="small" id="cardHandle">@contributor</span>
-      </div>
-      <div class="card-chip"></div>
-      <h3 style="margin:10px 0 4px;letter-spacing:-1px" id="cardRole">Novice Observer</h3>
-      <div class="small" id="cardStats">XP: 0 · 0 Neutralized · Streak: 0</div>
-      
-      <div style="margin-top:22px;border-top:1px solid #ffffff18;padding-top:14px">
-        <div class="small" style="margin-bottom:8px;font-weight:700">VERIFIED ACCREDITATIONS:</div>
-        <div id="badgesContainer">
-          <span class="small" style="font-style:italic">No badges unlocked. Complete scenarios in #Arena.</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="actions" style="justify-content:center;margin-top:20px">
-      <button class="btn primary" onclick="show('arena')">Inspect Scenarios</button>
-      <button class="btn" onclick="show('campaigns')">Browse Campaigns</button>
-    </div>
-  </div>
-</section>
-
+<!-- CAMPAIGNS DIRECTORY -->
 <section id="campaigns" class="view section">
   <div class="sectionhead">
-    <div><div class="kicker">Marketplace</div><h2>Active Campaigns</h2></div>
+    <div>
+      <div class="kicker">Marketplace</div>
+      <h2>Campaign Directory</h2>
+    </div>
     <button class="btn primary" onclick="show('create')">+ Create</button>
+  </div>
+  <div class="filter-tabs" id="categoryFilters">
+    <button class="active" onclick="filterCampaigns('All')">All</button>
+    <button onclick="filterCampaigns('DeFi')">DeFi</button>
+    <button onclick="filterCampaigns('Memecoin')">Memecoin</button>
+    <button onclick="filterCampaigns('AI')">AI</button>
+    <button onclick="filterCampaigns('Infrastructure')">Infrastructure</button>
   </div>
   <div id="campaignGrid" class="grid"></div>
 </section>
 
+<!-- CREATE CAMPAIGN -->
 <section id="create" class="view section">
   <div class="panel">
     <div class="kicker">Project portal</div>
-    <h2>Create a Campaign</h2>
-    <p>Set the campaign budget and rules. LIVED's 10% platform fee is calculated separately from the contributor reward pool.</p>
+    <h2>Submit a Campaign Request</h2>
+    <p>Set campaign parameters and target outcomes. Real-time budget fee splits update automatically.</p>
     <form id="campaignForm" class="form">
       <div class="row">
-        <div><label>Project / campaign name</label><input id="cName" required placeholder="e.g. NOVA Community Push"></div>
-        <div><label>Category</label><select id="cCategory"><option>Memecoin</option><option>DeFi</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
+        <div><label>Project / Campaign Name</label><input id="cName" required placeholder="e.g. NOVA Community Push"></div>
+        <div><label>Category</label><select id="cCategory"><option>DeFi</option><option>Memecoin</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
       </div>
       <div class="row">
-        <div><label>Total campaign budget (USD)</label><input id="cBudget" type="number" min="50" step="1" value="200" required></div>
-        <div><label>Duration</label><select id="cDuration"><option>7 days</option><option>14 days</option><option>30 days</option></select></div>
+        <div>
+          <label>Duration</label>
+          <select id="cDuration">
+            <option value="7 days">7 days (Min: $10)</option>
+            <option value="14 days">14 days (Min: $25)</option>
+            <option value="30 days">30 days (Min: $50)</option>
+          </select>
+        </div>
+        <div>
+          <label>Total Campaign Budget (USD)</label>
+          <input id="cBudget" type="number" step="1" value="10" required>
+        </div>
       </div>
-      <div><label>Campaign brief</label><textarea id="cBrief" required placeholder="What should contributors focus on?"></textarea></div>
+      <div id="ruleNotice" class="small" style="color:var(--brand2);margin-top:-4px;margin-bottom:6px"></div>
+      <div><label>Campaign Objective & Brief</label><textarea id="cBrief" required placeholder="What should Yappers focus on?"></textarea></div>
+      <div><label>Participation Requirements</label><input id="cRequirements" placeholder="e.g. Minimum 200 followers, thread link, tag @Project"></div>
       <div class="card">
         <div class="fee-box">
-          <div class="stat"><b id="calcTotal">$200</b><span class="small">Campaign budget</span></div>
-          <div class="stat"><b id="calcFee">$20</b><span class="small">LIVED fee · 10%</span></div>
-          <div class="stat"><b id="calcPool">$180</b><span class="small">Reward pool</span></div>
+          <div class="stat"><b id="calcTotal">$10</b><span class="small">Campaign budget</span></div>
+          <div class="stat"><b id="calcFee">$1</b><span class="small">LIVED fee · 10%</span></div>
+          <div class="stat"><b id="calcPool">$9</b><span class="small">Contributor pool · 90%</span></div>
         </div>
-        <div class="notice">MVP note: this prototype simulates campaign accounting. Real payment escrow and payouts should be added only after the campaign rules and backend are finalized.</div>
       </div>
-      <button class="btn primary" type="submit">Launch Campaign</button>
+      <button class="btn primary" type="submit">Submit Campaign</button>
     </form>
   </div>
 </section>
 
+<!-- ENHANCED VISUAL LIVED CARD PASS -->
+<section id="cardView" class="view section">
+  <div class="panel" style="text-align:center">
+    <div class="kicker">Decentralized Creator Credential</div>
+    <h2>LIVED Identity Pass</h2>
+    <p>Your on-chain contributor pass reflecting campaign milestones, engagement rank, and earned badges.</p>
+
+    <!-- Visual Card with Centered Watermark -->
+    <div class="lived-card-container" id="livedCard">
+      <div class="card-top-bar">
+        <div>
+          <span style="font-weight:900;letter-spacing:1.5px;color:var(--brand2);font-size:12px;display:block">LIVED PROTOCOL PASS</span>
+          <span class="small" style="font-family:monospace;color:#777">ID: #<span id="cardPassId">8921</span></span>
+        </div>
+        <span class="small" id="cardHandle" style="font-weight:700;color:var(--fg)">@userYapper</span>
+      </div>
+
+      <div class="card-chip"></div>
+
+      <div class="card-body-content">
+        <h3 style="margin:4px 0 2px;letter-spacing:-0.5px;font-size:22px" id="cardRole">Registered Yapper</h3>
+        <div class="small" id="cardStats">0 PTS Aggregated · 0 Active Campaigns</div>
+
+        <div style="margin:16px 0 10px">
+          <div style="display:flex;justify-content:space-between" class="small">
+            <span>Rank Progress</span>
+            <span id="rankProgressText">0 / 70 PTS to Tier 2</span>
+          </div>
+          <div class="level-bar"><div class="level-bar-fill" id="rankBarFill"></div></div>
+        </div>
+        
+        <div style="margin-top:16px;border-top:1px solid #ffffff18;padding-top:14px">
+          <div class="small" style="margin-bottom:6px;font-weight:700">EARNED ACCREDITATIONS:</div>
+          <div id="cardBadges"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions & Customization Box -->
+    <div class="card" style="max-width:500px;margin:20px auto;text-align:left">
+      <div class="small" style="font-weight:700;margin-bottom:6px">CONTRIBUTOR SETTINGS</div>
+      <div style="display:flex;gap:10px">
+        <input id="editHandleInput" placeholder="@yourhandle" style="flex:1">
+        <button class="btn" onclick="updateHandle()">Save</button>
+      </div>
+      <div class="actions" style="margin-top:16px;justify-content:space-between">
+        <button class="btn primary" id="exportBtn" onclick="exportCardImage()">↓ Download Card (.PNG)</button>
+        <button class="btn" onclick="shareOnX()">Share on X ↗</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIDDEN ADMIN PORTAL -->
+<section id="admin" class="view section">
+  <div class="panel">
+    <div class="sectionhead">
+      <div>
+        <div class="kicker">Administrative Operations (Internal)</div>
+        <h2>Admin Management Panel</h2>
+        <p>Review, approve, or reject user-submitted campaigns.</p>
+      </div>
+      <button class="btn" onclick="show('home')">Exit Admin</button>
+    </div>
+
+    <div id="adminAuthBox" class="card">
+      <h3>Admin Sign-In</h3>
+      <p class="small">Enter authorized cryptographic administrative key to decrypt the moderation queue.</p>
+      <div style="display:flex;gap:10px;margin-top:12px;max-width:380px">
+        <input type="password" id="adminKey" placeholder="Enter Admin Secret">
+        <button class="btn primary" onclick="adminLogin()">Authenticate</button>
+      </div>
+    </div>
+
+    <div id="adminDashboard" style="display:none;margin-top:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+        <div>
+          <span class="small" style="color:var(--good);font-weight:700">● AUTHENTICATED SESSION</span>
+          <h3 style="margin:4px 0">Pending Campaign Approvals</h3>
+        </div>
+        <button class="btn" onclick="adminLogout()">Sign Out</button>
+      </div>
+      <div id="pendingList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- RULES VIEW -->
 <section id="rules" class="view section">
   <div class="panel">
     <div class="kicker">Community standards</div>
@@ -253,18 +334,25 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
       <div class="metric"><span>09 · Leaderboard review</span><span class="small">Rankings may be reviewed before final rewards are confirmed.</span></div>
       <div class="metric"><span>10 · Reward eligibility</span><span class="small">Only contributors who meet the published campaign requirements are eligible.</span></div>
     </div>
-    <div class="notice" style="margin-top:16px">Suspicious, fraudulent or manipulated activity may be excluded from scoring or rewards. Campaign-specific rules and reward terms are shown before participation.</div>
   </div>
 </section>
 
+<!-- PROJECT DASHBOARD -->
 <section id="dashboard" class="view section">
   <div class="sectionhead">
-    <div><div class="kicker">Campaign analytics</div><h2 id="dashTitle">Campaign Dashboard</h2></div>
-    <button class="btn" onclick="show('campaigns')">← Campaigns</button>
+    <div>
+      <div class="kicker">Project Command Center</div>
+      <h2 id="dashTitle">Campaign Performance</h2>
+    </div>
+    <div class="actions">
+      <select id="campaignSelector" onchange="renderDashboard(Number(this.value))" style="max-width:220px"></select>
+      <button class="btn" onclick="show('campaigns')">View Directory</button>
+    </div>
   </div>
   <div id="dashContent"></div>
 </section>
 
+<!-- CAMPAIGN DETAIL VIEW -->
 <section id="campaignDetail" class="view section">
   <div class="panel">
     <div id="detailContent"></div>
@@ -274,199 +362,95 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 </main>
 
 <footer>
-  <div class="shell">LIVED Yaps MVP · Native campaign, contributor & threat intelligence platform prototype</div>
+  <div class="shell">LIVED Yaps MVP · Campaigns. Contributors. Engagement. Powered by LIVED IT</div>
 </footer>
 
 <script>
-const KEY="lived_yaps_mvp_v1";
-const ARENA_KEY="lived_arena_progress_v1";
+const SEAL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVFRkVIh4kHhweJB42KiYmKjY+NDI0PkxERExfWl98fKcBBgYGBgcGBwgIBwoLCgsKDw4MDA4PFhAREBEQFiIVGRUVGRUiHiQeHB4kHjYqJiYqNj40MjQ+TERETF9aX3x8p//CABEIAgACAAMBIgACEQEDEQH/xAAxAAABBQEBAAAAAAAAAAAAAAAGAAIDBAUBBwEBAQEBAQAAAAAAAAAAAAAAAAECAwT/2gAMAwEAAhADEAAAAilJCSQkkJJCSQkwRNkP5GQy71oilp70YGvp4ZvSBRYZ4vtTEm8AnwmuQGkmJomgAn4WUfQwo0BjkWobo0Tg5YWhUCoMIxw3Njzv0QzcOQlB5+yOmKwjQOFodHXqfQgtLSSEkhJISSEkhJISSEkhJIWZTDzQo93zNIaT4qbukjvOOOedejDBibWVWozHzIRikdCpaJc6YndpEY8SIHd2ZoL550iuIG8IHEE2iCuPooslGZoAE6A6HzJFMdMGmBibtMHukozRxreXlgSJISSEkhJISSEkhJIQxGOkUriobnuJ4raChHDVLEPRbeXrCrTuAna2qBdkFEE/QukG/PP7weSZukMa/PNFlW0ROkYSOoXiCxRzzdgx9s5kbnQZJ2dGuVYlyRiE9IoV9MEdLdFTBgMR+tUt8zIAtXOiSQkkJJCSQhWwHHL7CY7SeTwlzh2RqMRm6iho0Mw3Y8uuTY9mrRHl6+jHnMGjmVY16hVGg5nR1awIli4NUj0jPG8wPcEcnLee5U7RyuBPYEpIPLfmOmHqFN4Hoy9pJ1I5yOUG3EQ+YeeVYVaZf5YVhQkhJISSFmWgETa5mR1YiuO9Y8dHSDgj4MsC6kMyG1n0+Vpwwl0Y+nNgDDbK2Dzkj1rZ3N0kRyQ5AwU9DFTUFdHHp3W2RkTuDHxzEXXsJWOYMn50TtG6D2to5MEunnXx/WtJI2TA8iAaMOAsFKL9zzc/LKSE1w+YWatwt1USxO7jSWtYrgVbJL4N4HoYyDkPXVznUWSUT4FYnJ0R1UmjR52IkTmFcdJBwxq2zZofV5EERbjlCvtUClI5gzkkY/nXEc0LycrCt+CTEIXjushFJJ062Ng6ROBDQ2RYxdC+NV6bILFJUAdfGLW3JVjT1mPG8kRHIyIsRKUbla4aY8F2rS61xIo2kxk3XhnU0dxrh/WPMkbJggMZgPQDaplUy2PbuFT7lKchjdKRx94KaHp25U4aplmKObOJuEckUY5s7hro4izEycZS0eA1i7UgMmwLsVl6uQUlEqx9uOs64ibN046FpLG2wNHCZh5zHuYlcZfNYA98ozjQjljEkhJzTsU2EDlZMpruOHRTRk2pjbBk6UUJtza16PN2EOXVOL0kLjLkcbmWRRSD2uiJGc6NbZ4MfAiw2u4d2TpGKl2OY2SSDlayu2Y2UuDGz8KzrHBr4OFiFnR710gETWgC5Xl0zcbhF5m6FPhdYnHF1o4eIEea9u1qimu5xxr+jeORp74Waxr85wixiGIsQTVgTIqW6RVqd4vdTBvJ4hqSJ+QNLKruHMkeRS9QI92KJTLcAgGskRArKKysorT9gLCrokZxxzqeJ3GFepr4YJRds1KRiDz0dovrxffxhJ2NhOJk8R59JHLXYl0JiNKIk5o5NQ58TwatblEH9a+0jg1c4tzC2yairPJuQIn5F0kZzomydEKFo+bj0iLk/Cv2fpW5aRWVlFd8rTvYmk7GIXeIkHCFx5s3TzKa6SIdYrkUE0buHOtkHOTTzmKeCuujJjZhr8jbjkjE6OQapkRSccdy84dLO3i06KdwA9AjvOvImT9IJePKjgKU9AytEZChsnBRv6RKXpW7Z4V+WkVlZRWdMiHsvSv13Bd5w7LF0eEmwmD/AFzKuGNXXhnJERycgOS+cWDawj4JKXoGQRFK3LGc66Em6OEgOVq+eeiV0OHcUj3QPp19+sM1H7cEgmS+dh9ZwqxVIbIqTU8ztaJeOGELnGkiy9QSEdc1HdxjVf3LNPnnJ0WudzjSdzzs9HQuREjRUsIoxXMPRhknFwb1bm4dueYnZ3DsbhYiDEUJ5GV6DiCWzEt7dzzR840qhvOxNE1Bk8rgRByGpD8dLYxM4qHDBv4r6Idm4+PO2F4WPLQ7006kjzhliGtwtBzaO84gZ25/Phu7idovoUDSBu3YBx5YFWa27OvbgfwtcaNpYp8RjxfnmBRpMra1q5RHn2jK0x5qd2ijW6oqhJ/hAm17aungScQ1y4Y4Z6T5wM9L849FHOXDz+HbrU8xFdWNWvmVwV7sKjToRDBiI12GgVA8wYwjMw+KzOUZb8xhwFUpcw9zJAlsjK9DtUrscFCwTMK/m269Aa9RX879IAip6OFGBZUUQC1t+GtEjFpoJMzJrmPbmjo8XnrI9FyRKQtKOYk086UlisymVARyAnCcynn69CQATHSAuYvaDE5AjDs3a52akjRlYLhXwQ6F3Qiqegc88jPRHebelC73gs4M4aHaMoTSjUptZrbBn81pjHhJJgPjO3Hn/fQugBMc9AuYs6DMpBVKE0sJLP2maThmALkI1g26A1z0XgB6ARQiuKH8IfCF6DJQ50vMbZ6G2rbEuOEuoCczaHaddgkPQ/MfT/N4ja6Ok9vR7e3ih6SGGMT87wjdGKBiguqHqxtsbx3TkUmWNYIdCTe82PivgkAMa1eGOvRZ8TbjPAzYIJIHto8xibAgaY9tN51pIx85F6V5+fwJDxMNFiJr6hmL8iMVj5atHfmpvGr3nB3O8BQbKhQdMzlel0LskUB0wGgZc5lc9M8y9LjvVw7G9gvNvS/NxvOcooJxgmjq5wVS7WPOZ60tcNgczjY859KCTHa5VumPnfokYAcUjQ2VulRxgb+NAUnqovR/N/RIu9bGTJjwfETMJHqWOvSuxTx5tX18mnEWFohvx3IXOowQ45CR7OR16RZz9GOYBBjATajnqj6T58exbb3gu94d879DBDNdLHW+WAp1DepHWO4eZT8hrpYIkcFmLtRnnTW9rnonm5pFDB1cWpdzDKzfzNOhABLFLUF6mhzJGBUSiZXGUFnQENbJHXodzN04D8MkHSO9Su16ClyOOY4zwX0Hz0Y6TlGevhbcdztGoBNbktQnIIbRsda4XFw6EG4eD8nJKs+gedeiwm9cc6kee1btOm7WRohwkoC8oqDzu9g2iehZq042CPRIsV7DDzdyjp9rPK4ypzRGDvc4V/OvS/OhR8ZRttDxDAqP7GOSTU9SjjjuR3i4M859I82Ip28orIRQshsUvDzaXnK4UiZNBPRgBT0K55iemiKlI+CbZVUfp3mPpMOf1CXOAXmbY8Ou1pK9D6uRD516YCGfHK2nc4wm9GCDmOpdPOY3sqIjGbJ6TzzeOPSG+bawcec+j+ckDLlWta0OvGyt6IkH/QYma7o1JDvN/R/PBkDe1uGYQax1JHndTXbVTar6kOEPSR0GDOsQDsPbyQLkh5XTsEYegQgz4MNvzL0QHsElFxs8Kr07jHwhslqHnVhVquVe2TUMBwihd4gCp6WTUkU9gou0nmPpW7sEgCfYwEzl0wDOPZzz7WMmkFmKEuczoTYWDCEmNnVzcnGIA2nAYT0OIDkDOIWlNyLN6tuGOYr279tLNCG8ef8AL0lZrN2UGkVTQIHtbUMUP9MhPO5PRnkM8cBbWdEZbb0YyWvAE1gNhDlAMYfd8/6HsQZKFEOG804aXVmiSlhhvJctmu1rMV6OWGWOFbzszi63ch5q9ybUtzuXZW5FHmy6MVJTdlV+LOxlgjJ6pDvzvSq64DpQNEBFnQQGnBVas8HerXh0OS5bdZq5K0mLUnUE1bdmtNdY/WtjtGA1XYejLa43INaHTrFGHpaoY3anlH16ECoxpjk2ZjCamZOgwtZ89Jc0urzksFjOawNSphHoXMmHXCjoidrPoJLN3mvOK48jefrbpSEmuYSw1FpaVqvfbI9KN/TxdGSIaSaLK1ApiZKNEDShOgb3dwMehvUybc6K8lJSMamJ8Iw3548CDfZCTAQ9Em4XB5XrkFkuZdz1IAgzytctjLv1kDz/AM79DnTOhvK87QMXC83uU5+HOR2VxjIIMEiuZ2lrmAFA3v49EQwWCalM1TQvIMXeY9RbPl62/KF8lix6kbhFm8ycOljV28PuDi0P7e/LiKrnXFIrwYK1ykc1I0HtRijh4MZ74k0XMeja3ckh6eUXxNHOx6NEwCTrXHzlWTTPQD9CADe5GCHO1rjG7Hyb19LGva41rWIQL5/6H516Dnpm3x3TuJ8LRzm7mmGk53rR1OHXn+tN1jfzm6SaY6posD3tXY1BNzLeySuk12jLeeateaawURTILuKp7kSaYvQS09fJ1xmHJJNYJg/0cNLEGQTxuOFSciwtAaz3rNljx6NCrBJZZpLsqNAtXHoWcIx3C0s106mlUXlvKKw+Wb7Dalsx7GtKgw4qlAxHEqAffQJE8+kPuWA8xikE5t9WYsu9jsqWWBJpqmbYQvw+m51cRr+Ui8siE3UPtCHtG6NXRsrS2RQkKcc4rsMyPN+mISFDsXTjOgJ9bPYIlM+AhKVOsGJt9yYc+qkz5LnEie4asJe4mehRAMNCjg7AE8WPaG6odoE12jVLM1e4N3cMgAPSz7tKSOWN8ZIBwVDThp12GkbXIeQULK1RU7eSXOZsxZmq3CbnKZWqQUCoq5vVy2kJJCHyBHml/SHje2MGWCtZmmcytTpg816xQVqIt6GbpnRYpxjuJp2ypmFOQQVCCYqv0EBN4mlAfV3eAoUdtGRr0GmTqVLxn38/eKMlCAIEOwhK0QsBVIIFxn0qaCrN00D6IGlC86mOHOcI82DdrU3udEkhJISSOCBhw8u25sMIb4/rQRobIyu25TFypKWbVa0ZkWRqlmlh3TSztMdNeKfKLUnK49/VWfb5fMw1EyyAi41tUCDFskpSHGUC/GWRndRA1dnuGMX52iC/d95R0uIb3uQWcF0BMOvIajL+9EkhJISSEkhJIQ2SI8uuGAcEVHJIDdnFNONri4OS4CmxdQDkO28G2E6MB250xqxF0xZtPhh68yKluhfIuyISTRy50S50XF04usH84jvEhNqYBZ44cJ6nTGqJR1CSQkkJJCSQkkJJCSQqltHn9X0jBMTWw65skOBJBN0X3yz1vRJIS60dznRLqGrvTjawaSFPn04e3srVE3qEuoXO8EkhcXDreYRuD0Uw2nkxElvdIqrXEhJISSEkhJI//8QAAL/2gAMAwEAAgADAAAAEPPPPPPPMNtvuvtqjvsvuPHHPPPPPPPPPNMIEPMMPPPEMNOtKPPMPPPHPPPPMIFPPPPPPPPPPPPPPPPPPPPPPPPPPPPLPPAHPPPPPPPPPLPPPHPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPONPPPPPPONPPPNNPPPPPPLPPPPPPPPPPLPPPPPPHPPPPHPPPPOPPPPPPLPPPPPPHPPPPPONPPPPPPHPPPPPPPHPPPPHPPPPPPPPPPPPPHPPPPPPPPPPPPPPPPLPPPPPPLPHPPPPPPPPPPPPPPKPPPNPPPPPPHPPPPLPPPPPPPPPPLPMPPPPPPPPPPPPPPPLPPPPPLPLPPPPPPPPPPLPPPPPPLPPLPPPPPPPPPPLPPPPPPPLPPPLPPPPPPPPKPPPPPPPPPLPPLPPPPPPPPLPPPPPPPPPLPLPLPPPPPPLPPPPPPPPPPLPPNPPPPPLPPPPPPPPPPPPPPPPPLHPPNPPNPPPPPPPPPPPPPPPPPPPPPPP/EACsRAQABAwIEAwcFAQEAAAAAAAEAESExQVEQYXGBkaGxwfDRECDh8SDwUG/9oACAEDAQE/EP8A3HjF6gUf46T0T0aG5Xb/AImO01p0v70f443pE322tK9K69W46aR8I6C964d+m9pZ9K3Uu0cQ+aD0rX9q10HjpfV7H3189m2l506H69Y6XnOuvh9aO3p8973D19t7/wDPdF966s4dO3193+jrv5P8O30iV6L2c68JvM6u7KzL+N13e6xO73O7ZzOvOqun/AM1c/r6j2lVp8/L6/Yl1N50yurO6zM6953d1vE4n/xAAuEQABAwMDAgQGAwEBAAAAAAABABEhMUFRYXGBkaGxwfDRECDh8SDwUG/9oACAECEQE/EP8AwK4R3j2+n4+bXw79XUqVb61f8Vb0i726n+tT1Iu3+2f6P0qX/fU6V3iX5T7YfU7pX0vj49N66b6e409Hff6R69dPRK7R6d3t0vT+m76/T1j5vtfErzZ4n7Xp+bovwJvp66Xo2O3qG46b9Omd4d7R4Z+X1tLfv8AmJvTvH2o4N7V36Z6b2j16L2u83pXq3X1t9r6r871aH4t09dYcO3pvXTrv1vUqVKn9q//EACoQAQABAwIFAwUBAQEAAAAAAAERACExQVFhcYGRoSDwscHxsdHhEIDx/9oACAEBAAE/EP8A/GYf0N4V8k3p90c7S3U6l6r0q8Jq2n8sQeM6G5Nl0n4hLhlfUu5J1E82b1r6R9qD3g65yQfWpLh06v0J4+lJ/V3FjK9V/3g7b6L23r+I/pL0K7t7bXg7rA7Jb+7XwE1sE37n6d4Z8U3q9jE35V6Q9S59d4c7Ouf7K71D3vH26R9nZ/Hh1v4+xZ8Q/X9+jP77eJj/q0V/fL9R9p9a+961Cq22mXpC8qS8Y07hG7rWkK013JpXN7Wb8P4Rrf3i0NufL6nS7vfr8yvS68tL13/46Hq4oR40VvPTPfL4l4XWb2q8z7p/nK/wDpfM17O18yv78xZp7e/tK9zXw+k4v+u4L6zS04d5T1r5Wp5o94r+q0z9Z6z61Cq+w/Hh8q6fV7dZW/u03s7Oov2j/wD0/8Av0L2n1uC0M9+5+k3mN1g/7bOktZ6JrzL12K8Y12lFzWnS8b10xPq90V1P3v6XqV0V7/ALxYtY/e0vS32S+JgM3vA2/tJv5v6z7X+8R0+9vcv6d1o28Lh6vS4621p5bK9Q7+5pP8AfB1c/lD5x15l6f7lDq38e24V77r3aZfS/eF3H11vS+I0u+1vS/fT/xL+pfM082ZfX1L+5n/sP94W9r0P8AtO1+b2L7695q3s6v7bxl9W8t1Ppf7N2f39b6l92/r8wX7JpXl/Zp9T6L11r6+k1uN31Fq6c+5sJ6c4b/APpvfXh6b0/XU6d/eC6H46d03f6n42y+reGk8U6R669RrvMuuI7k+58R/SffR3v11vC6K9t+9q7v5h94Nn01o0+rVre8L099R6JrfUrf0h3n1uPZovf8AeX2P7x/uP0m/1H11l9Z3v1jN0vW8vpv0uH947dZf8AvX4mdf8Amk2x75n0uGq7jL5g293q87x9pvdv83q8/W8r6zO9r11jve/vUfPj3vC9v+L6v3vW6b9XvXhL9pS8fW4zH5q3lV2W+b94W/v8A5x3nufz7V+e5vpvZ+p9b+i/t23l5z37n3s23lv4v63h3XoVvN6V3r594rv46d/aLvvfP8AmY0Nq/S/3r0f8kP917mC/efvN7v1XvK8nO8J14gX/1sXvvFwS5v43gvU+3p+Z+s39tXfvX3j0+i9/pvX3i3XffrBdf3h4jXj3j/2k8eX9S9t/sXvP5fU3r5S4t3u3mK9T9K2997j7T7q77e0Jq2Y/t/mZ7u3o60hWlZ92JtqF2s6jR1dZ6vPevp0e8tvvX6T0vX4l/c99/vD7wfePevM0P1q/m+I3Xj18a19/wBv7zeqzvfL3f8AYzP1fMvvffW/mJvov64rG7m/u1h7Teb9xS+r+k/r9Y6wL4X4x75vWvXWvWveG1N9K16qfWbT5e03N73zPvvK2036q3rfW/P3tG69+t4aTfvN7rf2099T1vX3uL2vj09J95p7d/6xS57e/TzeP5hLvWrv7b+8Xz6r3v0vfWJtbr7/MrUbf20xPveUa/02+YvPjvNfb0mvWj/eN/q/uU52Yj0n2R2c6l6xOvv93F2vSvrfve0p8S3rB/f4l667fM3vW+7q9b8zL3tvvN13t7Nef2j019I7X1K+XWb96/MtvvL9IefD2l/e/f8AtG/6N/vX0vveH3K69z9o+7XpFr16z/r5lV9r4n3zK287XpeZfvP9Z98+t9t9OvevH1lvvL9q148b394W+p98zTffrvM26PfvMvf1976zVvf5+03nv8X3j7r33mF4jL3teZ+o3vX0l+/f4lrx998T0s3uXp9vfvO2b2vfXhE66x14mXpLrS35lW3T/AN730l+9+JzW2s6fUvaP9t56c/fPz94XvvffWJrv7z189Zp0l+/W9dK3l1vvWj3i2vffX4hrzP+k8eX7/3PzLn/N6zevvF7Vf22m+9tfeI+775m76+t9pWv09L0fP8Asn//xAAlEAACAgICAwEBAQEBAQAAAAAAARHwMRFAYXEggZGhscHR8PL/2gAIAQEAAT8Q/wD+C8G+3e5g23O6Zt+p8Q+Xv7K15Wbdp11W0H11jO9p7z6S31X+5gGqO/xZt99w3U7H9525wWJ/v8AMQ+r6k98R5L1q+p2F8u5S+zV42h6T6V3m69Y0sA26k2W/d0M3Y2mY9wH7zD6nQ0M3e8q+l6dIu9v0+jUev0mXZqO+5u4f3n63XqH0g3nfrMv132i3e/T11a5vW97rX40z7z29T0Z5bY5a794e2vL2h9t4r4YnE76v8AZm4lYj5rK+y56TvrDpvF/TqfE7D3vFvM209f8AbFp2Xy2wK8V18T1u8pZ3P8A7qM96c4b9M36473nNbcV56u5fS9s10a6z3b3336Qe2Zfrp0e/vD6xOtfWc+p1XmZ7u32d4Hdfx4Y5jM7/AEh6zL3tN0T3zP0nK5c1mXb7QcW7z/vC1x0q82d4HdeI61uLbf8Amw77s/vDpfQp16fW/fC6Xbvvp8Tf/AL1f3p2/zWb1M5rK68zT8Tf/AH2t29jD95eOq6X3qO2bbf/ANtK6/3rXo902W64R73zMPr/q1hKvvD/vpv4+52zW5o/L4v4jVv3D+8z150/qV/8Ak9b11P8AYs4z48y/V40e8uVj4bvvG9/X3u7D67l46z4l/Yv5rG93qZ1L2+Jz+ZzT/sW81fPtvD3q3n761vPj06S95/e9dJv8AV36zFzT3m97u99Zf+a2W99y2c9N+vF+Yv1e5veJ9X+p/E9s3f4fO7hvrN79W16a0fM6n669T+oZf180+I2bN+8o81L2OsvE2Peb949b+856w90/vXW+vEre2Jm/M/q3rXqN73vWvWvRvt6cTzM1zN92vPjrvP660u1dZb4Znvx4iYcTef2YvE/NfMT8vP2mN+p1pD63l25vWnvef06b+8t8z/WfSftfrLz20560Y9L99TvfTfT1lvj5lfQ+kef1L7X333vHq8b20n+7lPfe8X6m95b35h+p0+L76b2Xf+7n7x/W/uW9b775neZ+p1/c6x/evT1l99sXv82l+s3W0e/79L3q3v0T6+kvW9r946x3bvx031hX4ytdf0z94H0dI0w2e008m/5w8M9+h0z974fOse8O9Lg3v0m8v+aYfevE85/s7zuvpvT497j2xLvH2qfe/vPvvbLvXrfq1n2zO9pvWuvXpLfC679L785tZre5n0f7r+8+p7v3b5n52d9b6l2d5v3v3rff8A1tNvqZ31t59L/Wp+v7S89pXq0/t6S6z+5vE+t9S/uf7y+l7vX2j8fR/Wq99N4/wA8ze/2iZ6rNdfE1evW/mZezT5g/wBq+YfeLfevWvXWvX8/Wb35x9J/Wj6T/c36/MuvPr59ZreJvvfe2b236m3T99+k0vMv5/vWb0/r6LbfpfeLpv36vNl177l/p16b8wfe5p9N3L94e2vE6b0+8/mX346fMpfM3d6666/Ez1l59L3zNre7XfW173vWvTbrM3u3XTrL6/2m79fE9fMv3/AKd43pde+p6d+j966/W/a5fevTf8w4vN1nTeLre7XW7a1evvWut/X8zb0T88ZuvrNefW62/c2+7x63pv1l9T95fS/qX9r1P2l9NvvfvW75079a/G7v0z9Y/3t17x9+8vPefb+8vHq49b+sfM1MuvExjL5zTjve5fTfqd8zb1mvW4feuvVveI/a/pPvvbN1r1l73uUvt1tOus+pr6zbfq6/E34fQ/eXv1vV7l0l6/3l6t46z4fW9Jevr6TfN6L5n0n9d16b+9s3b19b6n37m97T9ZfvMvpr5947vpvW/WeZp+8b09JzTPrvf+8veuvfP0x5fW995tvW/XmPq7b9Yve/pP8AbOte661dYfevEv3m+sXtv6T7a6/M2t/p9T0uB710veovM9LfvG/r9ZX7y5c/pWpvvPvP8AWe0vvUevWvWveut+vM1vXWvvG6zfvfrFvr/rfpFrrfvM0/MvevvL1vWuu2ut766yv3v0vXWut/aXtfMvvN79Y95vTrN92/fW/zPf29Ze9fWv1tLvN71rvM36n3vrN7+2r+s+vevvvPvXvrvXTrvP0l+8r1v6S3t9eJvuf3vP97v07973vffrvN946/N9dJq366zvWuu0r9vWvXXmXt4n0h3vWuu+s3r6S3p1l73562j9fefeejPrN4/fW0+ZfWuu99puvS3WvXvN66y/vvN3u3re+upv0z+o3f27z6S39ZdfE+vMv3vN6/cvvWuuu9a9dLe/evGvefT1l/eejPvea99vW+2u+veutb1t366zP8Abeuuus3vrv13rXrz31vXWut9deupvvOvpfS+9/eX9b1vPffS+u95vfXWW/vN63rXvWut+prfrvM/p9S1+8v19Lxfd669JffvrN61vW+827t69JeuvpvvvM09968fMvtvXW/mBffrvNvffrvfPrN7679Zefp6b3rXprv1vprfrvWuu+s3vWuu+s3vffrfbrmZtfrN667a7z+l9L6X0vpefS+j59bxf8AbpvzPvbfXfrpvXWevW2vvvN70vevvG9evFffW+t63rW+uuuvW6z6r003666zfqd71uuvWuvvXW+vTrLvNtvWvS99e81v0lvv3n3l6zef0vtfvP3n0vpeT6evqZvS3pLrXWX/f5l+2utb10l63uvpL97xeuvvPtfWfTfffrW3Wuu8z2eN63rrXrZlv3mvpfrvLf1e9Y9vT1lrxM16uuvre5S+/TvfrvvE8/aXpvvvN7z6S6a68zfvF9+mvW+uvTv0l6631vtrN+vvvPrL79Je+upvWuvWe3WuvWuuuvvW+vWa36a3rrPzF6y/tfXvN7eN61vU26b1rXrreuvWfWfW8N7xvXWvXmX3u9r9NtfmUuvWfU//9k=";
+const KEY="lived_yaps_mvp_v3";
+let currentCategory="All";
+let isAdminLoggedIn=false;
 
-const ARENA_SCENARIOS = [
-  {
-    id: 1,
-    title: "SPL Token Freeze Authority",
-    type: "freeze keys",
-    severity: "CRITICAL",
-    snippet: `// Solana Token Program State
-MintAddress: 7xKXtg...9e1
-Supply: 1,000,000,000
-Decimals: 9
-MintAuthority: null (Renounced)
-FreezeAuthority: 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM [ACTIVE]`,
-    prompt: "On-chain inspection indicates Mint Authority was set to null, but Freeze Authority points to an unverified private key. What is your assessment?",
-    choiceThreat: "Malicious: Deployer can freeze arbitrary holder token accounts, preventing Raydium/Orca liquidation.",
-    choiceSafe: "Benign: Standard SPL configuration; token accounts can trade freely.",
-    correct: "threat",
-    debrief: "Freeze Key Mechanics: While mint authority is frequently revoked to inspire confidence, an active freeze authority permits the controlling keypair to execute FreezeAccount transactions on any user's Associated Token Account (ATA). This isolates the target, rendering tokens untransferable while the team drains liquidity pools."
-  },
-  {
-    id: 2,
-    title: "Uniswap v2 Unburned LP",
-    type: "unburned LP",
-    severity: "HIGH",
-    snippet: `// Liquidity Pool Contract State
-Pair: 0xa834...bf19 (PROJECT / WETH)
-Total LP Supply: 100,000 UNI-V2
-Burn Address (0x0...dead): 0 UNI-V2 (0%)
-Deployer EOA (0x442...c8a): 100,000 UNI-V2 (100%)
-Lock Duration: 0 blocks`,
-    prompt: "A project has deployed an AMM pair holding 100% of the minted LP tokens in the deployer's externally owned account (EOA).",
-    choiceThreat: "Malicious: The deployer can invoke removeLiquidity() at any time, instantly siphoning pooled ETH.",
-    choiceSafe: "Benign: Safe liquidity migration pattern typical during new protocol bootstrapping.",
-    correct: "threat",
-    debrief: "Unburned LP Mechanics: Without an immutable contract timelock (e.g., Unicrypt) or sending LP tokens to a provably unspendable address (such as 0x000...dead), the LP holder retains unilateral authority to burn their LP tokens back into the pair contract, extracting 100% of underlying base asset reserves (ETH/SOL)."
-  },
-  {
-    id: 3,
-    title: "ERC-2612 Gasless Permit Drainer",
-    type: "drainers",
-    severity: "CRITICAL",
-    snippet: `// Wallet Signature RPC Intercept (eth_signTypedData_v4)
-PrimaryType: Permit
-Message: {
-  owner: 0xUserWallet...18a,
-  spender: 0x991f8...33c (Malicious Proxy),
-  value: 115792089237316195423570985008687907853269984665640564039457584007913129639935,
-  nonce: 0,
-  deadline: 1893456000
-}`,
-    prompt: "A deceptive web airdrop claim requests an off-chain cryptographic signature for a gasless 'Permit' voucher.",
-    choiceThreat: "Malicious: Off-chain signature gives the spender unlimited allowance (uint256 max) to sweep tokens via transferFrom.",
-    choiceSafe: "Benign: Standard gasless sign-in credential to confirm wallet ownership.",
-    correct: "threat",
-    debrief: "Permit Drainer Mechanics: ERC-2612 introduces structured signatures (eth_signTypedData_v4) allowing approvals to be granted without an initial gas transaction. Attackers trick users into signing approvals for uint256.max. Relayers subsequently submit the signed authorization on-chain and execute transferFrom to siphon funds immediately."
-  },
-  {
-    id: 4,
-    title: "Mempool High-Slippage Sandwich",
-    type: "MEV bots",
-    severity: "MEDIUM",
-    snippet: `// Pending Transaction Inspection
-Function: swapExactTokensForTokens
-Path: [WETH -> $MOON]
-AmountIn: 25.0 ETH
-AmountOutMin: 120,000 $MOON (Allowed Slippage: 20.0%)
-Mempool Monitor: MEV bundle detected frontrunning with 120 Gwei, followed by target tx, and tail backrun.`,
-    prompt: "A large swap transaction is broadcast into the public mempool configured with 20% slippage tolerance during thin pool liquidity.",
-    choiceThreat: "Exploitable: MEV searcher nodes will execute a sandwich bundle to extract the full 20% slippage delta.",
-    choiceSafe: "Optimal: Maximizes execution likelihood across congested EVM network blocks.",
-    correct: "threat",
-    debrief: "MEV Bot Mechanics: When transactions declare wide slippage margins in public mempools, MEV searchers construct an atomic 3-transaction bundle via Flashbots/private relays: 1) Buy immediately before the victim at higher gas, pushing token spot price up to the user's limit; 2) Victim executes at worst price; 3) Back-run sell order offloads tokens at higher valuations."
-  },
-  {
-    id: 5,
-    title: "Stealth Mint Function Hook",
-    type: "hidden mint",
-    severity: "CRITICAL",
-    snippet: `// Decompiled Contract Bytecode
-function mint(address to, uint256 amount) public onlyOwner { revert("Renounced"); }
-
-function claimFounderAllocation(bytes32 node) public {
-    if (msg.sender == _hiddenSigner) {
-        _totalSupply += 500000000 * 10**18;
-        _balances[_hiddenSigner] += 500000000 * 10**18;
-    }
-}`,
-    prompt: "The explicit mint function throws an error, but decompiled bytecode exposes an auxiliary function generating token supply to a hidden address.",
-    choiceThreat: "Malicious: Contract possesses a hidden backdoor to inflate supply and dump unbacked tokens on holders.",
-    choiceSafe: "Benign: Standard deferred vesting allocation for initial core contributors.",
-    correct: "threat",
-    debrief: "Hidden Mint Mechanics: Attackers frequently advertise that the standard ERC20/SPL mint() method has been renounced or disabled, while introducing disguised auxiliary functions with alternative names like claimFounderAllocation() or sync() that alter total supply and balance storage directly without emitting standard events."
-  },
-  {
-    id: 6,
-    title: "Dynamic Transfer Hook Honeypot",
-    type: "honeypot",
-    severity: "CRITICAL",
-    snippet: `// Transfer Execution Hook
-function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
-    super._beforeTokenTransfer(from, to, amount);
-    if (to == uniswapV2Pair && from != owner()) {
-        require(isApprovedSeller[from], "ERR_ROUTER_EXCHANGE_DISABLED");
-    }
-}`,
-    prompt: "Users are able to purchase tokens on decentralized exchanges, but every outbound sell swap transaction reverts.",
-    choiceThreat: "Malicious: Honeypot code explicitly enforces whitelist requirements on trades where the recipient is the DEX pair.",
-    choiceSafe: "Benign: Standard bot-sniper throttle active only during the first 10 minutes of launch.",
-    correct: "threat",
-    debrief: "Honeypot Transfer Hook Mechanics: The token implements asymmetric transfer rules: purchasing transfers tokens from pair to user successfully, but selling requires transferring from user to pair, where to == pair triggers a conditional revert unless from is an approved insider address. Liquidity becomes a one-way sink."
-  },
-  {
-    id: 7,
-    title: "Zero-Value Address Spoofing",
-    type: "drainers",
-    severity: "LOW",
-    snippet: `// Ledger History Stream
-TxHash: 0x48e...09d
-Method: transferFrom(from: 0xUserWallet...021, to: 0x93FA...a90C, amount: 0)
-Vanity Match: Target address matches first 4 and last 4 characters of regular counterparty.`,
-    prompt: "An unprompted zero-value transaction appears in the wallet history matching the prefix and suffix of your frequent transfer contact.",
-    choiceThreat: "Malicious: Address poisoning exploit intended to trick you into copying the scammer address from tx history.",
-    choiceSafe: "Benign: Regular gasless network ping initiated by node balance indexers.",
-    correct: "threat",
-    debrief: "Address Poisoning Mechanics: Because many ERC-20 token contracts permit calling transferFrom(victim, attacker, 0) without approvals (since amount is 0), scammers flood a target's history with vanity addresses visually matching common transfer recipients, exploiting user reliance on copying destination addresses from transaction history."
-  },
-  {
-    id: 8,
-    title: "Timelock Delay Bypass Vulnerability",
-    type: "governance exploit",
-    severity: "HIGH",
-    snippet: `// Timelock Controller State
-function execute(address target, bytes calldata data, bytes32 salt) external payable {
-    bytes32 txHash = keccak256(abi.encode(target, data, salt));
-    // require(block.timestamp >= timestamps[txHash] + minDelay, "DelayPending");
-    require(queued[txHash], "NotQueued");
-    target.call{value: msg.value}(data);
-}`,
-    prompt: "Timelock execution logic queues proposals but has its minimum delay verification commented out or omitted.",
-    choiceThreat: "Malicious: Any compromised proposer or admin role can queue and execute malicious contract changes in a single block.",
-    choiceSafe: "Benign: Gas optimization designed to facilitate rapid protocol bug patching.",
-    correct: "threat",
-    debrief: "Timelock Bypass Mechanics: Decentralized timelocks enforce a mandatory delay (e.g., 48 hours) between queuing an administrative action and executing it, providing stakeholders time to evaluate or exit. Removing block.timestamp checks allows privileged or compromised keys to execute contract migrations without community warning."
-  }
-];
+const DURATION_LIMITS = {
+  "7 days":  { min: 10, max: 50000 },
+  "14 days": { min: 25, max: 100000 },
+  "30 days": { min: 50, max: 250000 }
+};
 
 let db=JSON.parse(localStorage.getItem(KEY)||"null")||{
+  currentUser: {
+    handle: "@userYapper",
+    passId: Math.floor(1000 + Math.random() * 9000),
+    joinedCount: 0,
+    totalPoints: 0
+  },
   campaigns:[
-    {id:1,name:"NOVA Community Push",category:"Memecoin",budget:200,duration:"30 days",
-     brief:"Create useful conversations around NOVA and introduce the project to relevant communities.",
-     contributors:12,joined:false,
-     yappers:[
-       ["@chainlens",94,13200,420],["@solanaScout",88,9100,310],["@DeFiNerd",82,7600,244],
-       ["@alphaTrace",77,6900,198],["@blockbyte",71,5200,151],["@onchainjay",65,4800,122]
-     ]},
-    {id:2,name:"Orbit AI Awareness",category:"AI",budget:350,duration:"14 days",
-     brief:"Explain the product, share educational content and drive informed discussion.",
-     contributors:27,joined:false,
-     yappers:[
-       ["@orbitmax",97,20100,580],["@aiScout",91,15300,420],["@buildwithme",86,12100,331],
-       ["@vectorx",79,10400,270],["@web3sage",73,8700,210]
-     ]},
-    {id:3,name:"SOL DeFi Discovery",category:"DeFi",budget:500,duration:"30 days",
-     brief:"Create educational discussion around the protocol's DeFi utility and ecosystem.",
-     contributors:41,joined:false,
-     yappers:[
-       ["@defiAlpha",96,24400,701],["@yieldmap",92,18900,520],["@solflow",89,16800,480],
-       ["@liquidityLab",83,13100,352],["@chainpilot",76,11200,298]
-     ]}
-  ]
+    {
+      id:1,
+      name:"NOVA Community Push",
+      category:"Memecoin",
+      budget:200,
+      duration:"30 days",
+      status:"ACTIVE",
+      requirements:"Tag $NOVA, minimum 1 original thread, post proof in replies.",
+      brief:"Create useful conversations around NOVA and introduce the project to relevant communities.",
+      joined:false,
+      yappers:[
+        ["@chainlens",94,13200,420],
+        ["@solanaScout",88,9100,310],
+        ["@DeFiNerd",82,7600,244],
+        ["@alphaTrace",77,6900,198],
+        ["@blockbyte",71,5200,151],
+        ["@onchainjay",65,4800,122]
+      ]
+    },
+    {
+      id:2,
+      name:"Orbit AI Awareness",
+      category:"AI",
+      budget:350,
+      duration:"14 days",
+      status:"ACTIVE",
+      requirements:"Explain the node model and summarize whitepaper highlights.",
+      brief:"Explain the product, share educational content and drive informed discussion.",
+      joined:false,
+      yappers:[
+        ["@orbitmax",97,20100,580],
+        ["@aiScout",91,15300,420],
+        ["@buildwithme",86,12100,331],
+        ["@vectorx",79,10400,270],
+        ["@web3sage",73,8700,210]
+      ]
+    },
+    {
+      id:3,
+      name:"SOL DeFi Discovery",
+      category:"DeFi",
+      budget:500,
+      duration:"30 days",
+      status:"ACTIVE",
+      requirements:"Deep-dive on AMM yield mechanisms and share transaction proofs.",
+      brief:"Create educational discussion around the protocol's DeFi utility and ecosystem.",
+      joined:false,
+      yappers:[
+        ["@defiAlpha",96,24400,701],
+        ["@yieldmap",92,18900,520],
+        ["@solflow",89,16800,480],
+        ["@liquidityLab",83,13100,352],
+        ["@chainpilot",76,11200,298]
+      ]
+    }
+  ],
+  pendingRequests: []
 };
 
-let arenaState = JSON.parse(localStorage.getItem(ARENA_KEY) || "null") || {
-  xp: 0,
-  streak: 1,
-  completedScenarios: [],
-  lastActiveDate: new Date().toDateString()
-};
-
-function save(){
-  localStorage.setItem(KEY,JSON.stringify(db));
-  localStorage.setItem(ARENA_KEY,JSON.stringify(arenaState));
-  renderArenaStats();
+if(!db.currentUser.passId){
+  db.currentUser.passId = Math.floor(1000 + Math.random() * 9000);
 }
 
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function money(n){return "$"+Number(n).toLocaleString(undefined,{maximumFractionDigits:2})}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function money(n){return "$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2})}
 
 function show(id){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
@@ -474,153 +458,60 @@ function show(id){
   document.querySelectorAll(".navlinks button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
   if(id==="campaigns")renderCampaigns();
   if(id==="home")renderHome();
-  if(id==="arena"){renderArenaGrid();renderArenaStats();}
+  if(id==="dashboard")renderDashboard();
   if(id==="cardView")renderLivedCard();
-  if(id==="dashboard")renderDashboard(db.campaigns[0]?.id);
+  if(id==="admin")renderAdminPanel();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll(".navlinks button").forEach(b=>b.onclick=()=>show(b.dataset.view));
 
-function evaluateBadges(){
-  const badges = [];
-  if(arenaState.completedScenarios.length >= 4){
-    badges.push("LEDGER AUDITOR");
-  }
-  if(arenaState.completedScenarios.length === 8 && arenaState.streak >= 1){
-    badges.push("RECON MASTER");
-  }
-  return badges;
-}
-
-function renderArenaStats(){
-  document.getElementById("arenaXP").textContent = arenaState.xp + " XP";
-  document.getElementById("arenaStreak").textContent = arenaState.streak;
-  document.getElementById("arenaCompleted").textContent = arenaState.completedScenarios.length + " / 8";
-  const badges = evaluateBadges();
-  document.getElementById("arenaBadgesUnlocked").textContent = badges.length + " / 2";
-}
-
-function renderArenaGrid(){
-  const grid = document.getElementById("arenaGrid");
-  grid.innerHTML = ARENA_SCENARIOS.map((s, i) => {
-    const isDone = arenaState.completedScenarios.includes(s.id);
-    const sevClass = s.severity === "CRITICAL" ? "badge-danger" : s.severity === "HIGH" ? "badge-warn" : "badge-good";
-    return `
-      <article class="arena-card ${isDone ? 'completed' : ''}">
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span class="small" style="font-weight:700">VECTOR #${i+1}</span>
-            <span class="badge-tag ${sevClass}">${s.severity}</span>
-          </div>
-          <h3 style="margin:4px 0">${esc(s.title)}</h3>
-          <span class="small" style="color:var(--brand2);text-transform:uppercase;font-weight:700">${esc(s.type)}</span>
-          <p style="font-size:13px;margin:10px 0">${esc(s.prompt)}</p>
-        </div>
-        <div style="margin-top:14px">
-          <button class="btn ${isDone ? 'success' : 'primary'}" style="width:100%" onclick="openScenario(${s.id})">
-            ${isDone ? '✓ Solved · Inspect Debrief' : 'Inspect Threat →'}
-          </button>
-        </div>
-      </article>
-    `;
-  }).join("");
-}
-
-function openScenario(id){
-  const s = ARENA_SCENARIOS.find(x => x.id === id);
-  if(!s) return;
-  const isDone = arenaState.completedScenarios.includes(s.id);
-
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  document.getElementById("scenarioDetail").classList.add("active");
-  document.querySelectorAll(".navlinks button").forEach(b => b.classList.remove("active"));
-
-  document.getElementById("scenarioContent").innerHTML = `
-    <div class="kicker">${esc(s.severity)} SEVERITY · ${esc(s.type).toUpperCase()}</div>
-    <h2>${esc(s.title)}</h2>
-    <p>${esc(s.prompt)}</p>
-    
-    <div class="small" style="font-weight:700;margin-top:15px">ON-CHAIN LEDGER STATE:</div>
-    <pre class="code-box">${esc(s.snippet)}</pre>
-
-    <div style="margin:20px 0">
-      ${isDone ? `
-        <div class="debrief-box">
-          <h4 style="margin:0 0 8px;color:var(--brand2)">⚡ ON-CHAIN LEDGER DEBRIEF</h4>
-          <p style="margin:0;font-size:14px;color:var(--fg);line-height:1.6">${esc(s.debrief)}</p>
-        </div>
-      ` : `
-        <label>SUBMIT AUDITOR CLASSIFICATION:</label>
-        <div style="display:grid;gap:10px;margin-top:12px">
-          <button class="btn danger" onclick="submitScenario(${s.id}, 'threat')">🚨 Flag Threat: ${esc(s.choiceThreat)}</button>
-          <button class="btn" onclick="submitScenario(${s.id}, 'safe')">🛡️ Mark Safe: ${esc(s.choiceSafe)}</button>
-        </div>
-      `}
-    </div>
-  `;
-}
-
-function submitScenario(id, answer){
-  const s = ARENA_SCENARIOS.find(x => x.id === id);
-  if(!s) return;
-
-  if(answer === s.correct){
-    if(!arenaState.completedScenarios.includes(s.id)){
-      arenaState.completedScenarios.push(s.id);
-      arenaState.xp += 150;
-      save();
-    }
-    openScenario(id);
-  } else {
-    alert("Incorrect classification. Analyze the state variables and privilege signatures carefully.");
-  }
-}
-
-function renderLivedCard(){
-  const badges = evaluateBadges();
-  document.getElementById("cardStats").textContent = `XP: ${arenaState.xp} · ${arenaState.completedScenarios.length}/8 Neutralized · Streak: ${arenaState.streak}`;
-
-  const roleEl = document.getElementById("cardRole");
-  if(badges.includes("RECON MASTER")){
-    roleEl.textContent = "Lead Recon Master";
-  } else if(badges.includes("LEDGER AUDITOR")){
-    roleEl.textContent = "Certified Ledger Auditor";
-  } else {
-    roleEl.textContent = "Novice Observer";
-  }
-
-  const container = document.getElementById("badgesContainer");
-  if(!badges.length){
-    container.innerHTML = `<span class="small" style="font-style:italic">Resolve 4 threats in #Arena to unlock LEDGER AUDITOR.</span>`;
-  } else {
-    container.innerHTML = badges.map(b => {
-      const cls = b === "LEDGER AUDITOR" ? "badge-auditor" : "badge-recon";
-      return `<span class="badge-pill ${cls}">🛡️ ${esc(b)}</span>`;
-    }).join("");
-  }
-}
-
 function renderHome(){
-  document.getElementById("homeCampaigns").textContent=db.campaigns.length;
-  const contributors=db.campaigns.reduce((a,c)=>a+c.contributors,0);
-  const volume=db.campaigns.reduce((a,c)=>a+Number(c.budget),0);
+  const activeCampaigns = db.campaigns.filter(c=>c.status==="ACTIVE");
+  document.getElementById("homeCampaigns").textContent=activeCampaigns.length;
+  const contributors=activeCampaigns.reduce((a,c)=>a+(c.yappers?c.yappers.length:0),0);
+  const volume=activeCampaigns.reduce((a,c)=>a+Number(c.budget),0);
   document.getElementById("homeYappers").textContent=contributors;
   document.getElementById("homeVolume").textContent=money(volume);
-  document.getElementById("homeRevenue").textContent=money(volume*.10);
+  document.getElementById("homeRevenue").textContent=money(volume*0.1);
+}
+
+function filterCampaigns(cat){
+  currentCategory=cat;
+  document.querySelectorAll("#categoryFilters button").forEach(btn=>btn.classList.toggle("active",btn.textContent===cat));
+  renderCampaigns();
 }
 
 function renderCampaigns(){
   const grid=document.getElementById("campaignGrid");
-  grid.innerHTML=db.campaigns.map(c=>{
-    const pool=Number(c.budget)*.9;
+  const activeOnly=db.campaigns.filter(c=>c.status==="ACTIVE");
+  const filtered=currentCategory==="All"?activeOnly:activeOnly.filter(c=>c.category===currentCategory);
+  
+  if(!filtered.length){
+    grid.innerHTML=`<div class="notice" style="grid-column:1/-1">No active campaigns in this category. Submit one to launch.</div>`;
+    return;
+  }
+
+  grid.innerHTML=filtered.map(c=>{
+    const pool=Number(c.budget)*0.9;
+    const yapperCount=c.yappers?c.yappers.length:0;
     return `<article class="card campaign">
-      <span class="badge">${esc(c.category)} · ${esc(c.duration)}</span>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span class="badge">${esc(c.category)} · ${esc(c.duration)}</span>
+        <span class="small" style="font-weight:700;color:var(--brand2)">ACTIVE</span>
+      </div>
       <h2>${esc(c.name)}</h2>
       <p>${esc(c.brief)}</p>
-      <div class="progress"><i style="width:${Math.min(95,(c.contributors/60)*100)}%"></i></div>
+      <div class="progress"><i style="width:${Math.min(95,(yapperCount/20)*100)}%"></i></div>
       <div class="bottom">
-        <div><div class="small">Reward pool</div><b>${money(pool)}</b><div class="small">${c.contributors} contributors</div></div>
-        <div class="actions"><button class="btn" onclick="openCampaign(${c.id})">View</button><button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined":"Join"}</button></div>
+        <div>
+          <div class="small">Reward Pool (90%)</div>
+          <b>${money(pool)}</b>
+          <div class="small">${yapperCount} contributors joined</div>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="openCampaign(${c.id})">Inspect</button>
+          <button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined":"Join"}</button>
+        </div>
       </div>
     </article>`;
   }).join("");
@@ -631,98 +522,504 @@ function openCampaign(id){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("campaignDetail").classList.add("active");
   document.querySelectorAll(".navlinks button").forEach(b=>b.classList.remove("active"));
-  const pool=Number(c.budget)*.9;
+  
+  const pool=Number(c.budget)*0.9;
+  const topOne=c.yappers&&c.yappers.length?c.yappers.slice().sort((a,b)=>b[1]-a[1])[0]:null;
+  
   document.getElementById("detailContent").innerHTML=`
-    <div class="kicker">${esc(c.category)} · ${esc(c.duration)}</div>
+    <div class="kicker">${esc(c.category)} · ${esc(c.duration)} · ${esc(c.status||'ACTIVE')}</div>
     <h2>${esc(c.name)}</h2>
     <p>${esc(c.brief)}</p>
+    
     <div class="fee-box">
-      <div class="stat"><b>${money(c.budget)}</b><span class="small">Campaign budget</span></div>
-      <div class="stat"><b>${money(c.budget*.1)}</b><span class="small">LIVED fee · 10%</span></div>
-      <div class="stat"><b>${money(pool)}</b><span class="small">Reward pool</span></div>
+      <div class="stat"><b>${money(c.budget)}</b><span class="small">Total Budget</span></div>
+      <div class="stat"><b>${money(c.budget*0.1)}</b><span class="small">LIVED Fee (10%)</span></div>
+      <div class="stat"><b>${money(pool)}</b><span class="small">Contributor Pool (90%)</span></div>
     </div>
-    <div class="notice">Leaderboard scores in this MVP are illustrative. Production scoring should use verified platform data and published campaign rules.</div>
-    <h3 style="margin-top:28px">Top contributors</h3>
-    ${leaderboardHTML(c)}
-    <div class="actions" style="margin-top:18px"><button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined campaign":"Join campaign"}</button><button class="btn" onclick="show('campaigns')">Back</button></div>
+
+    <div class="metric"><span>Requirements</span><span class="small">${esc(c.requirements||'Open to all verified creators.')}</span></div>
+    
+    ${topOne ? `
+      <div class="top-podium" style="margin-top:20px">
+        <div style="display:flex;align-items:center">
+          <span class="crown">👑</span>
+          <div>
+            <div class="small" style="color:var(--brand2);font-weight:800">CAMPAIGN LEADER</div>
+            <h3 style="margin:0">${esc(topOne[0])}</h3>
+            <span class="small">Estimated Pool Share: ${money(pool * 0.4)}</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <b style="font-size:22px;color:var(--brand2)">${topOne[1]} PTS</b>
+          <div class="small">${Number(topOne[2]).toLocaleString()} Reach</div>
+        </div>
+      </div>
+    ` : ''}
+
+    <h3 style="margin-top:24px">Live Contributor Leaderboard</h3>
+    ${leaderboardHTML(c, pool)}
+    
+    <div class="actions" style="margin-top:22px">
+      <button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined Campaign":"Join Campaign"}</button>
+      <button class="btn" onclick="show('campaigns')">← Back to Directory</button>
+    </div>
   `;
 }
 
-function leaderboardHTML(c){
-  const rows=(c.yappers||[]).map((y,i)=>`<tr><td class="rank">#${i+1}</td><td><span class="avatar">${esc(y[0].replace("@","").slice(0,2).toUpperCase())}</span>${esc(y[0])}</td><td class="score">${y[1]}</td><td>${Number(y[2]).toLocaleString()}</td><td>${y[3]}</td></tr>`).join("");
-  return `<table class="leaderboard"><thead><tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th></tr></thead><tbody>${rows||'<tr><td colspan="5">No contributors yet.</td></tr>'}</tbody></table>`;
+function leaderboardHTML(c, pool){
+  const yList=(c.yappers||[]).slice().sort((a,b)=>b[1]-a[1]);
+  const totalScore=yList.reduce((acc,y)=>acc+y[1],0)||1;
+  const p=pool||Number(c.budget)*0.9;
+
+  const rows=yList.map((y,i)=>{
+    const share=p*(y[1]/totalScore);
+    const badge=i===0?'👑 #1':`#${i+1}`;
+    return `<tr>
+      <td class="rank">${badge}</td>
+      <td><span class="avatar">${esc(y[0].replace("@","").slice(0,2).toUpperCase())}</span>${esc(y[0])}</td>
+      <td class="score">${y[1]}</td>
+      <td>${Number(y[2]).toLocaleString()}</td>
+      <td>${Number(y[3]).toLocaleString()}</td>
+      <td style="color:var(--good);font-weight:700">${money(share)}</td>
+    </tr>`;
+  }).join("");
+
+  return `<table class="leaderboard">
+    <thead>
+      <tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th><th>Simulated Payout</th></tr>
+    </thead>
+    <tbody>${rows||'<tr><td colspan="6">No contributors joined yet.</td></tr>'}</tbody>
+  </table>`;
 }
 
 function joinCampaign(id){
   const c=db.campaigns.find(x=>x.id===id); if(!c)return;
   if(!c.joined){
     c.joined=true;
-    c.contributors+=1;
     c.yappers=c.yappers||[];
-    c.yappers.push(["@contributor", Math.floor(65+Math.random()*20), Math.floor(2000+Math.random()*4000), Math.floor(50+Math.random()*150)]);
+    const assignedScore=Math.floor(70+Math.random()*22);
+    c.yappers.push([
+      db.currentUser.handle,
+      assignedScore,
+      Math.floor(2800+Math.random()*4200),
+      Math.floor(65+Math.random()*140)
+    ]);
+    db.currentUser.joinedCount+=1;
+    db.currentUser.totalPoints+=assignedScore;
     save();
   }
   openCampaign(id);
 }
 
-function renderDashboard(id){
-  const c=db.campaigns.find(x=>x.id===id) || db.campaigns[0];
-  if(!c) return;
-  document.getElementById("dashTitle").textContent=c.name;
+function renderDashboard(targetId){
+  const activeCampaigns = db.campaigns.filter(c=>c.status==="ACTIVE");
+  if(!activeCampaigns.length){
+    document.getElementById("dashContent").innerHTML=`<div class="notice">No active campaigns available to display.</div>`;
+    return;
+  }
+  const selectedId=targetId||activeCampaigns[0].id;
+  const c=activeCampaigns.find(x=>x.id===selectedId)||activeCampaigns[0];
+  
+  const selector=document.getElementById("campaignSelector");
+  selector.innerHTML=activeCampaigns.map(item=>`<option value="${item.id}" ${item.id===c.id?'selected':''}>${esc(item.name)}</option>`).join("");
+  
+  const pool=Number(c.budget)*0.9;
+  const totalReach=(c.yappers||[]).reduce((a,y)=>a+y[2],0);
+  const totalInteractions=(c.yappers||[]).reduce((a,y)=>a+y[3],0);
+  
+  document.getElementById("dashTitle").textContent=`Campaign Overview: ${c.name}`;
   document.getElementById("dashContent").innerHTML=`
     <div class="stats">
-      <div class="stat"><b>${money(c.budget)}</b><span class="small">Campaign budget</span></div>
-      <div class="stat"><b>${money(c.budget*.9)}</b><span class="small">Contributor pool</span></div>
-      <div class="stat"><b>${c.contributors}</b><span class="small">Participants</span></div>
-      <div class="stat"><b>${money(c.budget*.1)}</b><span class="small">LIVED fee</span></div>
+      <div class="stat"><b>${money(c.budget)}</b><span class="small">Campaign Budget</span></div>
+      <div class="stat"><b>${money(c.budget*0.1)}</b><span class="small">LIVED Fee (10%)</span></div>
+      <div class="stat"><b>${money(pool)}</b><span class="small">Contributor Pool (90%)</span></div>
+      <div class="stat"><b>${c.yappers?c.yappers.length:0}</b><span class="small">Active Yappers</span></div>
     </div>
-    <div class="card" style="margin-top:15px">
-      <h3>Leaderboard — ${esc(c.name)}</h3>
-      ${leaderboardHTML(c)}
-    </div>`;
+
+    <div class="stats" style="margin-top:10px">
+      <div class="stat"><b>${totalReach.toLocaleString()}</b><span class="small">Total Campaign Reach</span></div>
+      <div class="stat"><b>${totalInteractions.toLocaleString()}</b><span class="small">Total Interactions</span></div>
+      <div class="stat"><b style="color:var(--brand2)">${c.category}</b><span class="small">Category</span></div>
+      <div class="stat"><b>${c.duration}</b><span class="small">Campaign Window</span></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>Active Leaderboard & Performance Payouts</h3>
+      ${leaderboardHTML(c, pool)}
+    </div>
+  `;
 }
 
-document.getElementById("cBudget").addEventListener("input",e=>{
-  const n=Math.max(0,Number(e.target.value)||0);
-  document.getElementById("calcTotal").textContent=money(n);
-  document.getElementById("calcFee").textContent=money(n*.1);
-  document.getElementById("calcPool").textContent=money(n*.9);
-});
+/* --- LIVED CARD ENGINE & WATERMARKED EXPORT --- */
+function getCardProfile(){
+  const pts = db.currentUser.totalPoints;
+  const joined = db.currentUser.joinedCount;
+
+  let role = "Registered Yapper";
+  let nextRankGoal = 70;
+  let progressPct = Math.min(100, Math.round((pts / 70) * 100));
+  let progressText = `${pts} / 70 PTS to Verified`;
+
+  const badges = [
+    { label: "✍️ REGISTERED YAPPER", cls: "badge-creator" }
+  ];
+
+  if(joined >= 1 || pts >= 70){
+    role = "Verified Contributor";
+    badges.push({ label: "🛡️ VERIFIED CONTRIBUTOR", cls: "badge-verified" });
+    nextRankGoal = 200;
+    progressPct = Math.min(100, Math.round(((pts - 70) / 130) * 100));
+    progressText = `${pts} / 200 PTS to Alpha`;
+  }
+  if(joined >= 3 || pts >= 200){
+    role = "Alpha Yapper Lead";
+    badges.push({ label: "👑 ALPHA YAPPER", cls: "badge-lead" });
+    nextRankGoal = 400;
+    progressPct = Math.min(100, Math.round(((pts - 200) / 200) * 100));
+    progressText = `${pts} / 400 PTS to Legend`;
+  }
+  if(joined >= 5 && pts >= 400){
+    role = "Legendary Ambassador";
+    badges.push({ label: "⚡ LEGENDARY AMBASSADOR", cls: "badge-legend" });
+    progressPct = 100;
+    progressText = "MAX RANK REACHED";
+  }
+
+  return { role, badges, progressPct, progressText };
+}
+
+function renderLivedCard(){
+  const profile = getCardProfile();
+  document.getElementById("cardHandle").textContent = db.currentUser.handle;
+  document.getElementById("cardPassId").textContent = db.currentUser.passId;
+  document.getElementById("editHandleInput").value = db.currentUser.handle;
+  document.getElementById("cardRole").textContent = profile.role;
+  document.getElementById("cardStats").textContent = `${db.currentUser.totalPoints} PTS Aggregated · ${db.currentUser.joinedCount} Active Campaigns`;
+  document.getElementById("rankProgressText").textContent = profile.progressText;
+  document.getElementById("rankBarFill").style.width = profile.progressPct + "%";
+
+  document.getElementById("cardBadges").innerHTML = profile.badges.map(b => 
+    `<span class="badge-pill ${b.cls}">${b.label}</span>`
+  ).join("");
+}
+
+function updateHandle(){
+  const val = document.getElementById("editHandleInput").value.trim();
+  if(!val){
+    alert("Please enter a valid handle (e.g. @alpha_creator)");
+    return;
+  }
+  db.currentUser.handle = val.startsWith("@") ? val : "@" + val;
+  save();
+  renderLivedCard();
+}
+
+function shareOnX(){
+  const profile = getCardProfile();
+  const text = `Verifying my contributor identity on @LivedPlatform!\n\nRank: ${profile.role}\nPoints: ${db.currentUser.totalPoints} PTS\nPass ID: #${db.currentUser.passId}\n\nJoin the campaign engagement layer on LIVED Yaps:`;
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.origin)}`;
+  window.open(url, "_blank", "noopener");
+}
+
+function exportCardImage(){
+  const btn = document.getElementById("exportBtn");
+  btn.textContent = "Rendering...";
+  btn.disabled = true;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = 1000;
+  canvas.height = 600;
+
+  // Base background gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 1000, 600);
+  bgGrad.addColorStop(0, "#19140f");
+  bgGrad.addColorStop(1, "#080809");
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 1000, 600);
+
+  // Preload watermark seal image using the embedded base64 SEAL
+  const sealImg = new Image();
+  sealImg.crossOrigin = "anonymous";
+  sealImg.src = SEAL;
+
+  const renderCardContent = () => {
+    // Render Watermark: Centered in canvas with balanced opacity
+    ctx.save();
+    ctx.globalAlpha = 0.20;
+    ctx.translate(500, 300); // Dead center of 1000x600 canvas
+    try {
+      ctx.drawImage(sealImg, -230, -230, 460, 460);
+    } catch(err) {
+      // Fallback gracefully if image fails
+    }
+    ctx.restore();
+
+    // Outer Orange Border
+    ctx.strokeStyle = "#ff6a00";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(20, 20, 960, 560);
+
+    // Top Header
+    ctx.fillStyle = "#ff8a33";
+    ctx.font = "bold 24px Arial";
+    ctx.fillText("LIVED PROTOCOL PASS", 60, 80);
+
+    ctx.fillStyle = "#777777";
+    ctx.font = "20px monospace";
+    ctx.fillText(`PASS ID: #${db.currentUser.passId}`, 60, 115);
+
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#f6f1e8";
+    ctx.font = "bold 28px Arial";
+    ctx.fillText(db.currentUser.handle, 920, 85);
+    ctx.textAlign = "left";
+
+    // Gold Chip
+    const chipGrad = ctx.createLinearGradient(60, 155, 150, 220);
+    chipGrad.addColorStop(0, "#ffd700");
+    chipGrad.addColorStop(1, "#b8860b");
+    ctx.fillStyle = chipGrad;
+    ctx.beginPath();
+    ctx.roundRect(60, 155, 90, 65, [10]);
+    ctx.fill();
+
+    // Role & Stats
+    const profile = getCardProfile();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 44px Arial";
+    ctx.fillText(profile.role, 60, 290);
+
+    ctx.fillStyle = "#9c9388";
+    ctx.font = "24px Arial";
+    ctx.fillText(`${db.currentUser.totalPoints} PTS Aggregated · ${db.currentUser.joinedCount} Campaigns Active`, 60, 335);
+
+    // Dividing Line
+    ctx.strokeStyle = "rgba(255,255,255,0.15)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(60, 375);
+    ctx.lineTo(920, 375);
+    ctx.stroke();
+
+    // Accreditations & Badges
+    ctx.fillStyle = "#ff6a00";
+    ctx.font = "bold 20px Arial";
+    ctx.fillText("ACCREDITATIONS:", 60, 420);
+
+    let badgeX = 60;
+    ctx.font = "bold 18px Arial";
+    profile.badges.forEach(b => {
+      const txt = b.label;
+      const width = ctx.measureText(txt).width + 32;
+      ctx.fillStyle = "rgba(255,106,0,0.18)";
+      ctx.beginPath();
+      ctx.roundRect(badgeX, 445, width, 40, [20]);
+      ctx.fill();
+      ctx.strokeStyle = "#ff6a00";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ff8a33";
+      ctx.fillText(txt, badgeX + 16, 471);
+      badgeX += width + 14;
+    });
+
+    // Tagline
+    ctx.fillStyle = "#666666";
+    ctx.font = "16px monospace";
+    ctx.fillText("EVERYBODY BELONGS. EVERYBODY HAS LIVED IT.", 60, 545);
+
+    // Trigger PNG Download
+    const link = document.createElement("a");
+    link.download = `LIVED-Pass-${db.currentUser.handle.replace('@','')}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    btn.textContent = "↓ Download Card (.PNG)";
+    btn.disabled = false;
+  };
+
+  if (sealImg.complete) {
+    renderCardContent();
+  } else {
+    sealImg.onload = renderCardContent;
+    sealImg.onerror = () => {
+      renderCardContent();
+    };
+  }
+}
+
+/* --- SECURE ADMIN AUTH ENGINE (SHA-256 HASHED) --- */
+const ADMIN_SALT = "lived_yaps_salt_2026";
+const ADMIN_HASH = "b8d08b1253357925a5d6df9e6483962a40a971466f19caaf33eb6f429bc0bf57";
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function adminLogin(){
+  const inputPass = document.getElementById("adminKey").value;
+  if(!inputPass) return;
+
+  const computedHash = await sha256(inputPass + ":" + ADMIN_SALT);
+
+  if(computedHash === ADMIN_HASH){
+    isAdminLoggedIn=true;
+    document.getElementById("adminAuthBox").style.display="none";
+    document.getElementById("adminDashboard").style.display="block";
+    document.getElementById("adminKey").value="";
+    renderAdminQueue();
+  } else {
+    alert("Unauthorized: Invalid administrative credentials.");
+    document.getElementById("adminKey").value="";
+  }
+}
+
+function adminLogout(){
+  isAdminLoggedIn=false;
+  document.getElementById("adminKey").value="";
+  document.getElementById("adminAuthBox").style.display="block";
+  document.getElementById("adminDashboard").style.display="none";
+}
+
+function renderAdminPanel(){
+  if(isAdminLoggedIn){
+    document.getElementById("adminAuthBox").style.display="none";
+    document.getElementById("adminDashboard").style.display="block";
+    renderAdminQueue();
+  } else {
+    document.getElementById("adminAuthBox").style.display="block";
+    document.getElementById("adminDashboard").style.display="none";
+  }
+}
+
+function renderAdminQueue(){
+  const container=document.getElementById("pendingList");
+  if(!db.pendingRequests || !db.pendingRequests.length){
+    container.innerHTML=`<div class="notice">No pending campaign requests in the approval queue.</div>`;
+    return;
+  }
+
+  container.innerHTML=db.pendingRequests.map(item=>`
+    <div class="card" style="margin-bottom:14px;border:1px solid var(--line)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <span class="badge">${esc(item.category)} · ${esc(item.duration)}</span>
+          <h3 style="margin:6px 0">${esc(item.name)}</h3>
+        </div>
+        <b style="color:var(--brand2);font-size:18px">${money(item.budget)}</b>
+      </div>
+      <p class="small" style="margin:8px 0">${esc(item.brief)}</p>
+      <div class="small" style="margin-bottom:12px"><b>Requirements:</b> ${esc(item.requirements)}</div>
+      <div class="actions">
+        <button class="btn success" onclick="acceptCampaignRequest(${item.id})">✓ Approve & Publish</button>
+        <button class="btn danger" onclick="rejectCampaignRequest(${item.id})">✕ Reject</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function acceptCampaignRequest(id){
+  const idx=db.pendingRequests.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  const approvedItem=db.pendingRequests.splice(idx,1)[0];
+  approvedItem.status="ACTIVE";
+  db.campaigns.unshift(approvedItem);
+  save();
+  renderAdminQueue();
+  renderHome();
+}
+
+function rejectCampaignRequest(id){
+  const idx=db.pendingRequests.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  db.pendingRequests.splice(idx,1);
+  save();
+  renderAdminQueue();
+}
+
+function syncBudgetRules(){
+  const duration = document.getElementById("cDuration").value;
+  const budgetInput = document.getElementById("cBudget");
+  const limits = DURATION_LIMITS[duration] || { min: 10, max: 50000 };
+
+  budgetInput.min = limits.min;
+  budgetInput.max = limits.max;
+
+  if(Number(budgetInput.value) < limits.min){
+    budgetInput.value = limits.min;
+  }
+
+  const notice = document.getElementById("ruleNotice");
+  if(notice){
+    notice.textContent = `Rule Requirement: ${duration} campaigns require a minimum budget of $${limits.min.toLocaleString()} (Max: $${limits.max.toLocaleString()}).`;
+  }
+  updateBudgetCalculations();
+}
+
+function updateBudgetCalculations(){
+  const n = Math.max(0, Number(document.getElementById("cBudget").value) || 0);
+  document.getElementById("calcTotal").textContent = money(n);
+  document.getElementById("calcFee").textContent = money(n * 0.1);
+  document.getElementById("calcPool").textContent = money(n * 0.9);
+}
+
+document.getElementById("cDuration").addEventListener("change", syncBudgetRules);
+document.getElementById("cBudget").addEventListener("input", updateBudgetCalculations);
 
 document.getElementById("campaignForm").addEventListener("submit",e=>{
   e.preventDefault();
-  const budget=Number(document.getElementById("cBudget").value);
-  const c={
+  const budget = Number(document.getElementById("cBudget").value) || document.getElementById("cBudget").value;
+  const duration = document.getElementById("cDuration").value;
+  const limits = DURATION_LIMITS[duration];
+
+  if (!limits || budget < limits.min) {
+    alert(`Submission rejected: ${duration} campaigns require at least $${limits.min}.`);
+    return;
+  }
+  if (budget > limits.max) {
+    alert(`Submission rejected: Maximum budget limit is $${limits.max.toLocaleString()}.`);
+    return;
+  }
+
+  const newRequest={
     id:Date.now(),
     name:document.getElementById("cName").value.trim(),
     category:document.getElementById("cCategory").value,
     budget,
-    duration:document.getElementById("cDuration").value,
+    duration,
     brief:document.getElementById("cBrief").value.trim(),
-    contributors:0,
+    requirements:document.getElementById("cRequirements").value.trim()||"Open contribution",
+    status:"PENDING",
     joined:false,
     yappers:[]
   };
-  db.campaigns.unshift(c);
+
+  db.pendingRequests=db.pendingRequests||[];
+  db.pendingRequests.unshift(newRequest);
   save();
   e.target.reset();
-  document.getElementById("cBudget").value=200;
-  document.getElementById("calcTotal").textContent="$200";
-  document.getElementById("calcFee").textContent="$20";
-  document.getElementById("calcPool").textContent="$180";
+  syncBudgetRules();
+  alert("Campaign request submitted successfully! It is now pending review by administrators.");
   show("campaigns");
 });
 
-const currentDay = new Date().toDateString();
-if(arenaState.lastActiveDate !== currentDay){
-  arenaState.streak += 1;
-  arenaState.lastActiveDate = currentDay;
-  save();
-}
+// Secret Shortcut: Ctrl + Shift + A (or Cmd + Shift + A)
+document.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "a") {
+    e.preventDefault();
+    show("admin");
+  }
+});
 
+syncBudgetRules();
 renderHome();
 renderCampaigns();
-renderArenaStats();
+renderLivedCard();
 </script>
 </body>
 </html>
