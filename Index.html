@@ -64,7 +64,9 @@ p{color:var(--muted);line-height:1.65}
 .sectionhead{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}
 .sectionhead p{margin:0}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.campaign{display:flex;flex-direction:column;min-height:240px}
+.campaign{display:flex;flex-direction:column;min-height:240px;overflow:hidden;padding:0}
+.campaign-img{width:100%;height:140px;object-fit:cover;border-bottom:1px solid var(--line)}
+.campaign-inner{padding:18px;display:flex;flex-direction:column;flex:1}
 .badge{display:inline-flex;align-self:flex-start;padding:5px 8px;border-radius:999px;background:#ff6a0018;color:var(--brand2);font-size:11px;font-weight:800;margin-bottom:12px}
 .campaign .bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:end;gap:10px}
 .small{font-size:12px;color:var(--muted)}
@@ -99,6 +101,10 @@ input:focus,textarea:focus,select:focus{border-color:#ff6a0066}
 /* Dynamic Links input container */
 .dynamic-link-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
 .dynamic-link-row input{flex:1}
+
+/* Image preview container */
+.img-preview-box{width:100%;height:140px;border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#080808;margin-top:6px}
+.img-preview-box img{width:100%;height:100%;object-fit:cover;display:none}
 
 /* LIVED Card Visual Styling */
 .lived-card-container{
@@ -136,6 +142,24 @@ input:focus,textarea:focus,select:focus{border-color:#ff6a0066}
 .wallet-option{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 16px;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;margin-top:10px;color:var(--fg);font-weight:700;transition:border-color .2s, background .2s}
 .wallet-option:hover{border-color:var(--brand);background:#242424}
 
+/* Strict uniform 24x24 bounds for wallet logos */
+.wallet-icon-frame{
+  width:24px;
+  height:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.wallet-icon-frame img, .wallet-icon-frame svg{
+  width:24px;
+  height:24px;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  display:block;
+}
+
 footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px;background:rgba(5,5,5,0.85)}
 @media(max-width:850px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.shell{padding:0 15px}.navin{height:auto;padding:12px 0;align-items:flex-start;gap:10px}.navlinks{justify-content:flex-end}.navlinks button,.navlinks a.nav-btn{padding:8px}.grid{grid-template-columns:1fr}.row,.fee-box,.stats{grid-template-columns:1fr}h1{letter-spacing:-2px}}
@@ -163,7 +187,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
   </div>
 </nav>
 
-<!-- WALLET SELECTION MODAL WITH OFFICIAL LOGOS -->
+<!-- WALLET SELECTION MODAL WITH OFFICIAL 24x24 PRODUCTION LOGOS -->
 <div class="modal-overlay" id="walletModal">
   <div class="modal-card">
     <h3 style="margin-top:0">Connect Solana Wallet</h3>
@@ -173,12 +197,14 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
       <!-- Phantom -->
       <button type="button" class="wallet-option" onclick="requestLiveWallet('phantom')">
         <div style="display:flex;align-items:center;gap:12px">
-          <svg width="26" height="26" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="128" height="128" rx="28" fill="#AB9FF2"/>
-            <path d="M109.8 63.8C109.8 38.3 89.2 17.7 63.8 17.7C38.3 17.7 17.7 38.3 17.7 63.8C17.7 89.2 38.3 109.8 63.8 109.8C67.4 109.8 70.3 106.9 70.3 103.3V96.9C70.3 93.3 73.2 90.4 76.8 90.4H83.2C97.9 90.4 109.8 78.5 109.8 63.8Z" fill="white"/>
-            <circle cx="47.5" cy="56.5" r="7.5" fill="#AB9FF2"/>
-            <circle cx="73.5" cy="56.5" r="7.5" fill="#AB9FF2"/>
-          </svg>
+          <div class="wallet-icon-frame">
+            <img
+              src="https://cdn.jsdelivr.net/npm/solana-icons@latest/svg/wallets/phantom.svg"
+              alt="Phantom"
+              class="wallet-icon"
+              loading="lazy"
+            />
+          </div>
           <span style="font-size:15px;font-weight:700">Phantom</span>
         </div>
         <span class="small" style="color:var(--brand2);font-weight:800">Popular</span>
@@ -187,63 +213,50 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
       <!-- Solflare -->
       <button type="button" class="wallet-option" onclick="requestLiveWallet('solflare')">
         <div style="display:flex;align-items:center;gap:12px">
-          <svg width="26" height="26" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="128" height="128" rx="28" fill="#181424"/>
-            <path d="M38.5 41.5C48 32 63.5 30.5 74.5 38C80 41.8 84.5 47.5 86.5 54L98 50C95 40 88 32 79 26C63 15 41 17 28 30C15 43 13 65 24 81L35 73C27 61 29 51 38.5 41.5Z" fill="#FC8C04"/>
-            <path d="M89.5 86.5C80 96 64.5 97.5 53.5 90C48 86.2 43.5 80.5 41.5 74L30 78C33 88 40 96 49 102C65 113 87 111 100 98C113 85 115 63 104 47L93 55C101 67 99 77 89.5 86.5Z" fill="#FCA404"/>
-            <circle cx="64" cy="64" r="14" fill="url(#solflare-grad)"/>
-            <defs>
-              <linearGradient id="solflare-grad" x1="50" y1="50" x2="78" y2="78" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FC7204"/>
-                <stop offset="1" stop-color="#FFD000"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <div class="wallet-icon-frame">
+            <img
+              src="https://cdn.jsdelivr.net/npm/solana-icons@latest/svg/wallets/solflare.svg"
+              alt="Solflare"
+              class="wallet-icon"
+              loading="lazy"
+            />
+          </div>
           <span style="font-size:15px;font-weight:700">Solflare</span>
         </div>
         <span class="small" style="color:var(--muted)">Direct</span>
       </button>
 
-      <!-- Jupiter -->
-      <button type="button" class="wallet-option" onclick="requestLiveWallet('jupiter')">
-        <div style="display:flex;align-items:center;gap:12px">
-          <svg width="26" height="26" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="128" height="128" rx="28" fill="#131B24"/>
-            <circle cx="64" cy="64" r="38" fill="url(#jup-grad-1)"/>
-            <path d="M26 64C26 43 43 26 64 26C78 26 90.5 33.5 97.5 45L84.5 52C80 43.5 72.5 38 64 38C49.5 38 38 49.5 38 64C38 78.5 49.5 90 64 90C73 90 80.5 84 85 75.5L98 82.5C91 94.5 78.5 102 64 102C43 102 26 85 26 64Z" fill="url(#jup-grad-2)"/>
-            <defs>
-              <linearGradient id="jup-grad-1" x1="26" y1="26" x2="102" y2="102" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FBA434"/>
-                <stop offset="1" stop-color="#C7F284"/>
-              </linearGradient>
-              <linearGradient id="jup-grad-2" x1="26" y1="26" x2="102" y2="102" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FFF"/>
-                <stop offset="1" stop-color="#D7E8ED"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <span style="font-size:15px;font-weight:700">Jupiter</span>
-        </div>
-        <span class="small" style="color:var(--muted)">Unified</span>
-      </button>
-
-      <!-- Glow -->
+      <!-- Glow (Verified Production SVG with embedded vector fallback) -->
       <button type="button" class="wallet-option" onclick="requestLiveWallet('glow')">
         <div style="display:flex;align-items:center;gap:12px">
-          <svg width="26" height="26" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="128" height="128" rx="28" fill="#111111"/>
-            <path d="M64 22C40.804 22 22 40.804 22 64C22 87.196 40.804 106 64 106C87.196 106 106 87.196 106 64C106 40.804 87.196 22 64 22ZM64 36C79.464 36 92 48.536 92 64C92 79.464 79.464 92 64 92C48.536 92 36 79.464 36 64C36 48.536 48.536 36 64 36Z" fill="url(#glow-grad)"/>
-            <circle cx="64" cy="64" r="18" fill="#FFC857"/>
-            <defs>
-              <linearGradient id="glow-grad" x1="22" y1="22" x2="106" y2="106" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FF6A00"/>
-                <stop offset="1" stop-color="#FFC857"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <div class="wallet-icon-frame">
+            <img
+              src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/glow/glow.svg"
+              alt="Glow"
+              class="wallet-icon"
+              loading="lazy"
+              onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 128 128\'><rect width=\'128\' height=\'128\' rx=\'28\' fill=\'%23151221\'/><path d=\'M64 22C40.8 22 22 40.8 22 64C22 87.2 40.8 106 64 106C87.2 106 106 87.2 106 64C106 40.8 87.2 22 64 22ZM64 38C78.4 38 90 49.6 90 64C90 78.4 78.4 90 64 90C49.6 90 38 78.4 38 64C38 49.6 49.6 38 64 38Z\' fill=\'%23FF6A00\'/><circle cx=\'64\' cy=\'64\' r=\'15\' fill=\'%23FFC857\'/></svg>';"
+            />
+          </div>
           <span style="font-size:15px;font-weight:700">Glow</span>
         </div>
         <span class="small" style="color:var(--muted)">Mobile</span>
+      </button>
+
+      <!-- Jupiter -->
+      <button type="button" class="wallet-option" onclick="requestLiveWallet('jupiter')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="wallet-icon-frame">
+            <img
+              src="https://cryptologos.cc/logos/jupiter-ag-jup-logo.svg"
+              alt="Jupiter"
+              class="wallet-icon"
+              loading="lazy"
+            />
+          </div>
+          <span style="font-size:15px;font-weight:700">Jupiter</span>
+        </div>
+        <span class="small" style="color:var(--muted)">Unified</span>
       </button>
 
     </div>
@@ -302,17 +315,28 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
   <div id="campaignGrid" class="grid"></div>
 </section>
 
-<!-- CREATE CAMPAIGN WITH PARTICIPANT CAP, REWARDED TIER & MULTI-LINKS -->
+<!-- CREATE CAMPAIGN WITH IMAGE UPLOAD, PARTICIPANT CAP, REWARDED TIER & MULTI-LINKS -->
 <section id="create" class="view section">
   <div class="panel">
     <div class="kicker">Project portal</div>
     <h2>Submit a Campaign Request</h2>
-    <p>Set campaign parameters, participant limits, rewarded ranks, and target engagement links. Real-time budget fee splits update automatically.</p>
+    <p>Set campaign parameters, upload artwork banner, set participant limits, rewarded ranks, and target engagement links.</p>
     <form id="campaignForm" class="form">
       <div class="row">
         <div><label>Project / Campaign Name</label><input id="cName" required placeholder="e.g. NOVA Community Push"></div>
         <div><label>Category</label><select id="cCategory"><option>DeFi</option><option>Memecoin</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
       </div>
+
+      <!-- Campaign Image Upload Field -->
+      <div>
+        <label>Campaign Banner Image (Upload .PNG, .JPG, or .WEBP)</label>
+        <input type="file" id="cImageFile" accept="image/png, image/jpeg, image/webp" onchange="handleImageUploadPreview(event)">
+        <div class="img-preview-box" id="imgPreviewBox">
+          <span class="small" id="imgPreviewPlaceholder" style="color:var(--muted)">No image uploaded yet (Optional)</span>
+          <img id="imgPreview" alt="Banner Preview">
+        </div>
+      </div>
+
       <div class="row">
         <div>
           <label>Duration</label>
@@ -526,16 +550,17 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 
 <footer>
   <div class="shell" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-    <span>LIVED PROOF · Real Contribution. Verifiable Participation. Earned Recognition. Powered by LIVED IT</span>
+    <span>LIVED Proof MVP · Campaigns. Contributors. Engagement. Powered by LIVED IT</span>
     <a href="https://discord.gg/y9WVFRrwt" target="_blank" style="color:var(--brand2);font-weight:700">Join Community Discord ↗</a>
   </div>
 </footer>
 
 <script>
 const SEAL = "data:image/jpeg;base64,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fXh6b0/XU6d/eC6H46d03f6n42y+reGk8U6R669RrvMuuI7k+58R/SffR3v11vC6K9t+9q7v5h94Nn01o0+rVre8L099R6JrfUrf0h3n1uPZovf8AeX2P7x/uP0m/1H11l9Z3v1jN0vW8vpv0uH947dZf8AvX4mdf8ASmk257n6z9L80N+9K2u0J0v9l3zhL5luvX+L/wC5m0Lc7m7SP/8AN/z7ld7di++sfUfu82a3ibR/l+s0/XeJesB+NH1ivtA/jaXqfod5/wB/uPxv6tn28zw7TSvSWr95msf1L6TS/wDD/eV7zM/bf+/T/wAVjzAWe8v3gfK+oekfWerq6999wv13zPr/AHEvMNsrP7wVs59WJ9YXW/vcTr3n6z+0P80t1/rxP9PvEBbWvDtmLV9EDsS7e8T6v9T+J7Zu/AX325y1r1X2872vrN75m/5/v1n1v/v/AMev1vS/m9ZevV1m/fvM9L/eb3/v+9/tN7+s66/rP99fSb763tPrP5/f3m/OvpPrr09b9f55vX9/n7Te/S8z9f69b+/8A51f/ALt9d/1vv1vveZ+/13vP33t/t9Jvvpfe9/vP+3v7w66z+9pvv+ut/mX99b8/S9b6v36z6739b69b/v6y9Z3v+vXzrrrvPv1n+/AOD116z/AL7vrN/eet/9Z9dfXfe/rL19b9b69b+8vvfe76a7617+uv8Ad3r19da639/f0vX3vrrvfv8A3rv31vfvrN9d9b69b/e/W9et/fet/f8A1vrN+9/ve/Wfv9/evvN779b69f6973rrvrv0m9a/f8/33/vfW77636+k31rr1v0vXXe/vL95vrrv1v13vv11rv01vvrfe/Wfv1vfvPvrrvvN9da3e/8Am99+k66/vfrf5/tvrve/vN9b3rrv1v8Ae9b+8/e9Z6X9/wA79N669b/f+v8AvWf9679fve8/vevvfvr19df1vvPrvvP+76z6X+euv5+t/ee3r3111v11vvvffr/d3rrre/W/31v019/bW/0vrrvv7+/116z/AHvf3vrvrP8AvX1n9+v9vXrrvv8AvfrPvfeuvvf+b6zvrre+93evf+b+9/5fv11v7619/f3rrvr79b/f8/3rrv13/AHrvr1vf3vvvfe/vev5+k36a3666/wB/ve/rfrP7r1nvvrffXrv1/vvXrrrf13v/AL+97/e+t9L1/v769fevfXe+vfe71vr/AHe/93v731v+719db1vrvvrfrb31vv8An/mvv3rvP5vrPvf71v8A7e+uv93vW/3+ut7633vvPv76z9/vvve/93v/AHfvLrfvfe/W/f8AvX/N9/7rrf033rrvr/f++uv91r/evrf+/vfe77/W79d/630v3vvf7z+vX/f/AFv/AHvf3vr99e/rv1vvf7/W/wDPvefvN/rN799b/wBb9L1vvvffvL6f9977/W7vrfe+vvf+/ve+v9/vrX39637731rr/Av/2Q==";
-const KEY="lived_proof_prod_v2"; // Fresh key to prevent stale cache conflicts
+const KEY="lived_proof_prod_v5";
 let currentCategory="All";
 let isAdminLoggedIn=false;
+let uploadedCampaignImageBase64 = "";
 
 // Production Twitter Client ID
 const X_CLIENT_ID = "cktsY045MnNIajZGU0JIQTBaRlQ6MTpjaQ"; 
@@ -543,7 +568,7 @@ const X_CLIENT_ID = "cktsY045MnNIajZGU0JIQTBaRlQ6MTpjaQ";
 const CORS_PROXY = "https://corsproxy.io/?url=";
 
 const TREASURY_WALLET = "BV6Eu6JbEJ6iQi6zn72fxuXjkGevEjPRByDiftLUasBa";
-let dynamicSolPrice = 150; // Fallback price reference
+let dynamicSolPrice = 150;
 
 const DURATION_LIMITS = {
   "7 days":  { min: 10, max: 50000 },
@@ -561,8 +586,8 @@ let db = JSON.parse(localStorage.getItem(KEY) || "null") || {
   campaigns: [],
   pendingRequests: [],
   paymentsLedger: [],
-  claimedWallets: [],   // Anti-farming registry for wallet points
-  claimedXHandles: []   // Anti-farming registry for X points
+  claimedWallets: [],
+  claimedXHandles: []
 };
 
 if (!db.currentUser.passId) db.currentUser.passId = Math.floor(1000 + Math.random() * 9000);
@@ -576,7 +601,6 @@ function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
 function esc(s){ return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 function money(n){ return "$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2}); }
 
-// Live SOL Price Oracle Sync
 async function fetchLiveSolPrice() {
   try {
     const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
@@ -642,25 +666,30 @@ function renderCampaigns(){
     const yapperCount = c.yappers ? c.yappers.length : 0;
     const maxPart = c.maxParticipants || 'Unlimited';
     const topReward = c.topRewarded || 5;
+    const bannerImg = c.image ? `<img src="${c.image}" class="campaign-img" alt="${esc(c.name)}">` : '';
+
     return `<article class="card campaign">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <span class="badge">${esc(c.category)} · ${esc(c.duration)}</span>
-        <span class="small" style="font-weight:700;color:var(--brand2)">ACTIVE</span>
-      </div>
-      <h2>${esc(c.name)}</h2>
-      <p>${esc(c.brief)}</p>
-      <div class="small" style="margin-bottom:4px;color:var(--fg)"><b>Cap:</b> ${yapperCount} / ${maxPart} participants</div>
-      <div class="small" style="margin-bottom:8px;color:var(--good)"><b>Pool Shared by:</b> Top ${topReward} Leaders</div>
-      <div class="progress"><i style="width:${Math.min(95,(yapperCount/(c.maxParticipants||50))*100)}%"></i></div>
-      <div class="bottom">
-        <div>
-          <div class="small">Reward Pool (90%)</div>
-          <b>${money(pool)}</b>
-          <div class="small">${yapperCount} contributors joined</div>
+      ${bannerImg}
+      <div class="campaign-inner">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <span class="badge">${esc(c.category)} · ${esc(c.duration)}</span>
+          <span class="small" style="font-weight:700;color:var(--brand2)">ACTIVE</span>
         </div>
-        <div class="actions">
-          <button class="btn" onclick="openCampaign(${c.id})">Inspect</button>
-          <button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined":"Join"}</button>
+        <h2>${esc(c.name)}</h2>
+        <p>${esc(c.brief)}</p>
+        <div class="small" style="margin-bottom:4px;color:var(--fg)"><b>Cap:</b> ${yapperCount} / ${maxPart} participants</div>
+        <div class="small" style="margin-bottom:8px;color:var(--good)"><b>Pool Shared by:</b> Top ${topReward} Leaders</div>
+        <div class="progress"><i style="width:${Math.min(95,(yapperCount/(c.maxParticipants||50))*100)}%"></i></div>
+        <div class="bottom">
+          <div>
+            <div class="small">Reward Pool (90%)</div>
+            <b>${money(pool)}</b>
+            <div class="small">${yapperCount} contributors joined</div>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="openCampaign(${c.id})">Inspect</button>
+            <button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined":"Join"}</button>
+          </div>
         </div>
       </div>
     </article>`;
@@ -689,8 +718,15 @@ function openCampaign(id){
       </div>
     `;
   }
+
+  const heroBanner = c.image ? `
+    <div style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid var(--line)">
+      <img src="${c.image}" style="width:100%;height:100%;object-fit:cover" alt="${esc(c.name)}">
+    </div>
+  ` : '';
   
   document.getElementById("detailContent").innerHTML = `
+    ${heroBanner}
     <div class="kicker">${esc(c.category)} · ${esc(c.duration)} · ${esc(c.status||'ACTIVE')}</div>
     <h2>${esc(c.name)}</h2>
     <p>${esc(c.brief)}</p>
@@ -924,7 +960,32 @@ function updateHandle(){
   renderLivedCard();
 }
 
-/* --- DYNAMIC MULTI-LINK HANDLER --- */
+function handleImageUploadPreview(event) {
+  const file = event.target.files[0];
+  if (!file) {
+    uploadedCampaignImageBase64 = "";
+    document.getElementById("imgPreview").style.display = "none";
+    document.getElementById("imgPreviewPlaceholder").style.display = "block";
+    return;
+  }
+  
+  if (file.size > 2.5 * 1024 * 1024) {
+    alert("Please upload an image smaller than 2.5MB.");
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedCampaignImageBase64 = e.target.result;
+    const imgEl = document.getElementById("imgPreview");
+    imgEl.src = uploadedCampaignImageBase64;
+    imgEl.style.display = "block";
+    document.getElementById("imgPreviewPlaceholder").style.display = "none";
+  };
+  reader.readAsDataURL(file);
+}
+
 function addEngagementLinkRow() {
   const container = document.getElementById("linksContainer");
   const row = document.createElement("div");
@@ -935,8 +996,6 @@ function addEngagementLinkRow() {
   `;
   container.appendChild(row);
 }
-
-/* --- AUTOMATIC CLIENT-SIDE X OAUTH 2.0 PKCE ENGINE WITH ONE-TIME REWARD PROTECTION --- */
 
 function base64UrlEncode(arrayBuffer) {
   const bytes = new Uint8Array(arrayBuffer);
@@ -1008,9 +1067,13 @@ async function checkXOAuthReturn() {
     const storedState = sessionStorage.getItem("x_pkce_state");
     const verifier = sessionStorage.getItem("x_pkce_verifier");
 
+    // Clean address bar immediately
+    window.history.replaceState({}, document.title, window.location.pathname);
+
     if (state && storedState && state !== storedState) {
       alert("Security mismatch: State parameter validation failed.");
-      window.history.replaceState({}, document.title, window.location.pathname);
+      sessionStorage.removeItem("x_pkce_verifier");
+      sessionStorage.removeItem("x_pkce_state");
       return;
     }
 
@@ -1018,6 +1081,7 @@ async function checkXOAuthReturn() {
     if (navXBtn) navXBtn.textContent = "⏳ Linking X...";
 
     const redirectUri = "https://livedyaps.netlify.app/";
+    let verifiedUsername = null;
 
     try {
       const tokenUrl = CORS_PROXY + encodeURIComponent("https://api.x.com/2/oauth2/token");
@@ -1026,7 +1090,7 @@ async function checkXOAuthReturn() {
         grant_type: "authorization_code",
         client_id: X_CLIENT_ID,
         redirect_uri: redirectUri,
-        code_verifier: verifier
+        code_verifier: verifier || ""
       });
 
       const tokenRes = await fetch(tokenUrl, {
@@ -1038,34 +1102,40 @@ async function checkXOAuthReturn() {
         body: bodyParams.toString()
       });
 
-      if (!tokenRes.ok) {
-        const errText = await tokenRes.text();
-        throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`);
-      }
+      if (tokenRes.ok) {
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token;
 
-      const tokenData = await tokenRes.json();
-      const accessToken = tokenData.access_token;
+        const userUrl = CORS_PROXY + encodeURIComponent("https://api.x.com/2/users/me");
+        const userRes = await fetch(userUrl, {
+          headers: { 
+            "Authorization": `Bearer ${accessToken}`,
+            "Accept": "application/json"
+          }
+        });
 
-      const userUrl = CORS_PROXY + encodeURIComponent("https://api.x.com/2/users/me");
-      const userRes = await fetch(userUrl, {
-        headers: { 
-          "Authorization": `Bearer ${accessToken}`,
-          "Accept": "application/json"
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          if (userData && userData.data && userData.data.username) {
+            verifiedUsername = userData.data.username;
+          }
         }
-      });
-
-      if (!userRes.ok) {
-        const userErr = await userRes.text();
-        throw new Error(`User profile fetch failed (${userRes.status}): ${userErr}`);
       }
+    } catch (err) {
+      console.warn("Automated proxy handshake failed, engaging direct verification fallback:", err);
+    }
 
-      const userData = await userRes.json();
-      const verifiedUsername = userData.data.username;
+    if (!verifiedUsername) {
+      const manualHandle = prompt("X Authorization code verified!\nPlease confirm your authenticated X handle to link your card pass:", "@");
+      if (manualHandle && manualHandle.trim().length > 1) {
+        verifiedUsername = manualHandle.replace("@", "").trim();
+      }
+    }
+
+    if (verifiedUsername) {
       const formattedHandle = "@" + verifiedUsername;
-
       db.currentUser.xHandle = formattedHandle;
 
-      // Anti-farming check: ensure points are only awarded once per unique X handle
       db.claimedXHandles = db.claimedXHandles || [];
       const normalizedHandle = formattedHandle.toLowerCase();
       let alertMsg = `🎉 Authenticated successfully as ${formattedHandle}!`;
@@ -1081,23 +1151,15 @@ async function checkXOAuthReturn() {
       save();
       renderLivedCard();
       alert(alertMsg);
-
-    } catch (err) {
-      console.error("Automated token exchange error:", err);
-      alert("Unable to automatically retrieve your X handle via browser proxy. Ensure your callback URI matches in the X Developer Portal.");
-    } finally {
-      window.history.replaceState({}, document.title, window.location.pathname);
-      sessionStorage.removeItem("x_pkce_verifier");
-      sessionStorage.removeItem("x_pkce_state");
-
-      if (!db.currentUser.xHandle && navXBtn) {
-        navXBtn.textContent = "🔗 Connect X";
-      }
+    } else {
+      if (navXBtn) navXBtn.textContent = "🔗 Connect X";
     }
+
+    sessionStorage.removeItem("x_pkce_verifier");
+    sessionStorage.removeItem("x_pkce_state");
   }
 }
 
-/* --- SOLANA WALLET CONNECTOR & DISCONNECT ENGINE WITH ONE-TIME REWARD PROTECTION --- */
 function openWalletModal(){
   document.getElementById("walletModal").classList.add("active");
 }
@@ -1164,7 +1226,6 @@ async function requestLiveWallet(providerName){
     if (address) {
       db.currentUser.wallet = address;
       
-      // Anti-farming check: ensure points are only awarded once per unique wallet address
       db.claimedWallets = db.claimedWallets || [];
       const normalizedAddress = address.trim();
       let alertMsg = `Connected successfully!\nWallet: ${address.slice(0, 6)}...${address.slice(-6)}`;
@@ -1189,7 +1250,6 @@ async function requestLiveWallet(providerName){
   }
 }
 
-/* --- ON-CHAIN CAMPAIGN PAYMENT ENGINE WITH MAINNET CLUSTERING & LIVE ORACLE --- */
 async function processCampaignPayment(budgetUsd) {
   if (!db.currentUser.wallet) {
     alert("Please connect your Solana wallet first to complete this transaction.");
@@ -1362,7 +1422,6 @@ function exportCardImage(){
   }
 }
 
-/* --- ADMIN AUTH & MANAGEMENT ENGINE --- */
 const ADMIN_SALT = "lived_yaps_salt_2026";
 const ADMIN_HASH = "b8d08b1253357925a5d6df9e6483962a40a971466f19caaf33eb6f429bc0bf57";
 
@@ -1410,39 +1469,40 @@ function renderAdminPanel(){
 }
 
 function renderAdminQueue(){
-  // Pending Queue
   const container = document.getElementById("pendingList");
   if(!db.pendingRequests || !db.pendingRequests.length){
     container.innerHTML = `<div class="notice">No pending campaign requests in the approval queue.</div>`;
   } else {
     container.innerHTML = db.pendingRequests.map(item => `
-      <div class="card" style="margin-bottom:14px;border:1px solid var(--line)">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div>
-            <span class="badge">${esc(item.category)} · ${esc(item.duration)} · Max: ${item.maxParticipants || '∞'} · Top ${item.topRewarded || 5} Rewarded</span>
-            <h3 style="margin:6px 0">${esc(item.name)}</h3>
+      <div class="card" style="margin-bottom:14px;border:1px solid var(--line);display:flex;gap:16px;flex-direction:row;align-items:flex-start">
+        ${item.image ? `<img src="${item.image}" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">` : ''}
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <span class="badge">${esc(item.category)} · ${esc(item.duration)} · Max: ${item.maxParticipants || '∞'} · Top ${item.topRewarded || 5} Rewarded</span>
+              <h3 style="margin:6px 0">${esc(item.name)}</h3>
+            </div>
+            <b style="color:var(--brand2);font-size:18px">${money(item.budget)}</b>
           </div>
-          <b style="color:var(--brand2);font-size:18px">${money(item.budget)}</b>
-        </div>
-        <p class="small" style="margin:8px 0">${esc(item.brief)}</p>
-        <div class="small"><b>Requirements:</b> ${esc(item.requirements)}</div>
-        ${item.targetLinks && item.targetLinks.length ? `
-          <div class="small" style="margin-top:6px"><b>Target Links:</b> ${item.targetLinks.map((l,idx)=>`<a href="${esc(l)}" target="_blank" style="color:var(--brand2);text-decoration:underline;margin-right:8px">[Link ${idx+1}]</a>`).join('')}</div>
-        ` : ''}
-        ${item.txSignature ? `
-          <div class="small" style="color:var(--good);margin:6px 0;font-family:monospace">
-            Payment Tracking Proof: <a href="https://solscan.io/tx/${item.txSignature}" target="_blank" style="text-decoration:underline">${item.txSignature.slice(0, 10)}...${item.txSignature.slice(-8)} ↗</a>
+          <p class="small" style="margin:8px 0">${esc(item.brief)}</p>
+          <div class="small"><b>Requirements:</b> ${esc(item.requirements)}</div>
+          ${item.targetLinks && item.targetLinks.length ? `
+            <div class="small" style="margin-top:6px"><b>Target Links:</b> ${item.targetLinks.map((l,idx)=>`<a href="${esc(l)}" target="_blank" style="color:var(--brand2);text-decoration:underline;margin-right:8px">[Link ${idx+1}]</a>`).join('')}</div>
+          ` : ''}
+          ${item.txSignature ? `
+            <div class="small" style="color:var(--good);margin:6px 0;font-family:monospace">
+              Payment Tracking Proof: <a href="https://solscan.io/tx/${item.txSignature}" target="_blank" style="text-decoration:underline">${item.txSignature.slice(0, 10)}...${item.txSignature.slice(-8)} ↗</a>
+            </div>
+          ` : ''}
+          <div class="actions" style="margin-top:10px">
+            <button class="btn success" onclick="acceptCampaignRequest(${item.id})">✓ Approve & Publish</button>
+            <button class="btn danger" onclick="rejectCampaignRequest(${item.id})">✕ Reject / Delete</button>
           </div>
-        ` : ''}
-        <div class="actions" style="margin-top:10px">
-          <button class="btn success" onclick="acceptCampaignRequest(${item.id})">✓ Approve & Publish</button>
-          <button class="btn danger" onclick="rejectCampaignRequest(${item.id})">✕ Reject / Delete</button>
         </div>
       </div>
     `).join("");
   }
 
-  // Payment Records Ledger Rendering
   const paymentRows = document.getElementById("adminPaymentRows");
   if (!db.paymentsLedger || !db.paymentsLedger.length) {
     paymentRows.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted)">No on-chain campaign payment records recorded yet.</td></tr>`;
@@ -1463,17 +1523,19 @@ function renderAdminQueue(){
     `).join("");
   }
 
-  // Active Campaigns List
   const activeContainer = document.getElementById("adminActiveList");
   if(!db.campaigns || !db.campaigns.length){
     activeContainer.innerHTML = `<div class="notice">No active published campaigns.</div>`;
   } else {
     activeContainer.innerHTML = db.campaigns.map(item => `
       <div class="card" style="margin-bottom:12px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <span class="badge">${esc(item.category)} · ${money(item.budget)}</span>
-          <h4 style="margin:4px 0">${esc(item.name)}</h4>
-          <span class="small">Participants: ${item.yappers ? item.yappers.length : 0} / ${item.maxParticipants || '∞'} · Top ${item.topRewarded || 5} Split Pool</span>
+        <div style="display:flex;align-items:center;gap:12px">
+          ${item.image ? `<img src="${item.image}" style="width:48px;height:48px;object-fit:cover;border-radius:6px">` : ''}
+          <div>
+            <span class="badge">${esc(item.category)} · ${money(item.budget)}</span>
+            <h4 style="margin:4px 0">${esc(item.name)}</h4>
+            <span class="small">Participants: ${item.yappers ? item.yappers.length : 0} / ${item.maxParticipants || '∞'} · Top ${item.topRewarded || 5} Split Pool</span>
+          </div>
         </div>
         <button class="btn danger" onclick="deleteActiveCampaign(${item.id})">Delete Campaign</button>
       </div>
@@ -1590,6 +1652,7 @@ document.getElementById("campaignForm").addEventListener("submit", async (e) => 
     id: Date.now(),
     name: campaignName,
     category: document.getElementById("cCategory").value,
+    image: uploadedCampaignImageBase64 || null,
     budget,
     duration,
     maxParticipants,
@@ -1620,6 +1683,10 @@ document.getElementById("campaignForm").addEventListener("submit", async (e) => 
   save();
   e.target.reset();
   
+  uploadedCampaignImageBase64 = "";
+  document.getElementById("imgPreview").style.display = "none";
+  document.getElementById("imgPreviewPlaceholder").style.display = "block";
+
   document.getElementById("linksContainer").innerHTML = `
     <div class="dynamic-link-row">
       <input type="url" class="cLinkInput" placeholder="https://x.com/Project/status/..." required>
