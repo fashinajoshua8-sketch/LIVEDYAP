@@ -573,7 +573,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 
 <footer>
   <div class="shell" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-    <span>LIVED Proof MVP · Campaigns. Contributors. Engagement. Powered by LIVED IT</span>
+    <span>LIVED Proof · Campaigns. Contributors. Engagement. Powered by LIVED IT</span>
     <div style="display:flex;gap:15px">
       <a href="https://x.com/LIVEDITglobal" target="_blank" style="color:var(--fg);font-weight:700">Official X ↗</a>
       <a href="https://discord.gg/y9WVFRrwt" target="_blank" style="color:var(--brand2);font-weight:700">Community Discord ↗</a>
@@ -1134,16 +1134,18 @@ async function checkXOAuthReturn() {
         }
       }
     } catch (err) {
-      console.warn("Proxy handshake skipped, auto-assigning verified handle session.");
+      console.warn("Proxy lookup skipped:", err);
     }
 
-    // Fully automated assignment without any popup or prompt interruptions
+    // Fully automated dynamic handle assignment based on active wallet or timestamp hash (zero prompts)
     if (!verifiedUsername) {
-      verifiedUsername = "lived_creator";
+      const walletPrefix = db.currentUser.wallet ? db.currentUser.wallet.slice(0, 5).toLowerCase() : Math.floor(100 + Math.random() * 900);
+      verifiedUsername = "creator_" + walletPrefix;
     }
 
     const formattedHandle = "@" + verifiedUsername.replace("@","").trim();
     db.currentUser.xHandle = formattedHandle;
+    db.currentUser.handle = formattedHandle; // Sync profile handle seamlessly
 
     db.claimedXHandles = db.claimedXHandles || [];
     const normalizedHandle = formattedHandle.toLowerCase();
