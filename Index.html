@@ -1044,7 +1044,7 @@ async function redirectToXOAuth() {
     localStorage.setItem("x_pkce_verifier", verifier);
     localStorage.setItem("x_pkce_state", state);
 
-    const redirectUri = "https://livedyaps.netlify.app/";
+    const redirectUri = "https://livedproof.xyz/";
     const scope = "users.read tweet.read";
 
     const authUrl = `https://twitter.com/i/oauth2/authorize?` +
@@ -1085,7 +1085,7 @@ async function checkXOAuthReturn() {
     const navXBtn = document.getElementById("navXBtn");
     if (navXBtn) navXBtn.textContent = "⏳ Linking X...";
 
-    const redirectUri = "https://livedyaps.netlify.app/";
+    const redirectUri = "https://livedproof.xyz/";
     let verifiedUsername = null;
 
     // Bypass strict state mismatch error by accepting code directly, or verifying when state matches
