@@ -430,7 +430,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
           <span style="font-weight:900;letter-spacing:1.5px;color:var(--brand2);font-size:12px;display:block">LIVED PROOF PASS</span>
           <span class="small" style="font-family:monospace;color:#777">ID: #<span id="cardPassId">8921</span></span>
         </div>
-        <span class="small" id="cardHandle" style="font-weight:700;color:var(--fg)">@userProof</span>
+        <span class="small" id="cardHandle" style="font-weight:700;color:var(--fg)">@userYapper</span>
       </div>
 
       <div class="card-chip"></div>
@@ -573,7 +573,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 
 <footer>
   <div class="shell" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-    <span>LIVED Proof · Campaigns. Contributors. Engagement. Powered by LIVED IT</span>
+    <span>LIVED Proof MVP · Campaigns. Contributors. Engagement. Powered by LIVED IT</span>
     <div style="display:flex;gap:15px">
       <a href="https://x.com/LIVEDITglobal" target="_blank" style="color:var(--fg);font-weight:700">Official X ↗</a>
       <a href="https://discord.gg/y9WVFRrwt" target="_blank" style="color:var(--brand2);font-weight:700">Community Discord ↗</a>
@@ -601,7 +601,7 @@ const DURATION_LIMITS = {
 
 let db = JSON.parse(localStorage.getItem(KEY) || "null") || {
   currentUser: {
-    handle: "@userProof",
+    handle: "@userYapper",
     passId: Math.floor(1000 + Math.random() * 9000),
     joinedCount: 0,
     totalPoints: 0
@@ -1086,7 +1086,6 @@ async function checkXOAuthReturn() {
   }
 
   if (code) {
-    // Clean address bar immediately
     window.history.replaceState({}, document.title, window.location.pathname);
 
     const navXBtn = document.getElementById("navXBtn");
@@ -1137,31 +1136,32 @@ async function checkXOAuthReturn() {
       console.warn("Proxy lookup skipped:", err);
     }
 
-    // Fully automated dynamic handle assignment based on active wallet or timestamp hash (zero prompts)
     if (!verifiedUsername) {
-      const walletPrefix = db.currentUser.wallet ? db.currentUser.wallet.slice(0, 5).toLowerCase() : Math.floor(100 + Math.random() * 900);
-      verifiedUsername = "creator_" + walletPrefix;
+      const uniqueSuffix = Math.random().toString(36).substring(2, 8);
+      verifiedUsername = "creator_" + uniqueSuffix;
     }
 
     const formattedHandle = "@" + verifiedUsername.replace("@","").trim();
-    db.currentUser.xHandle = formattedHandle;
-    db.currentUser.handle = formattedHandle; // Sync profile handle seamlessly
+    const normalizedHandle = formattedHandle.toLowerCase();
 
     db.claimedXHandles = db.claimedXHandles || [];
-    const normalizedHandle = formattedHandle.toLowerCase();
-    let alertMsg = `🎉 Authenticated successfully as ${formattedHandle}!`;
-
-    if (!db.claimedXHandles.includes(normalizedHandle)) {
-      db.claimedXHandles.push(normalizedHandle);
-      db.currentUser.totalPoints += 50;
-      alertMsg += `\n+50 PTS connection reward awarded.`;
+    
+    // Check if this specific X account was already connected before
+    if (db.claimedXHandles.includes(normalizedHandle)) {
+      db.currentUser.xHandle = formattedHandle;
+      db.currentUser.handle = formattedHandle;
+      save();
+      renderLivedCard();
+      alert(`🎉 X Account ${formattedHandle} re-linked successfully!\n(Note: Point reward already claimed previously for this X account.)`);
     } else {
-      alertMsg += `\n(Connection points already claimed previously for this X account.)`;
+      db.claimedXHandles.push(normalizedHandle);
+      db.currentUser.xHandle = formattedHandle;
+      db.currentUser.handle = formattedHandle;
+      db.currentUser.totalPoints += 15; // Reduced X connection reward to 15 PTS
+      save();
+      renderLivedCard();
+      alert(`🎉 Authenticated successfully as ${formattedHandle}!\n+15 PTS connection reward awarded.`);
     }
-
-    save();
-    renderLivedCard();
-    alert(alertMsg);
 
     localStorage.removeItem("x_pkce_verifier");
     localStorage.removeItem("x_pkce_state");
@@ -1233,15 +1233,14 @@ async function requestLiveWallet(providerName){
 
     if (address) {
       db.currentUser.wallet = address;
-      
       db.claimedWallets = db.claimedWallets || [];
       const normalizedAddress = address.trim();
       let alertMsg = `Connected successfully!\nWallet: ${address.slice(0, 6)}...${address.slice(-6)}`;
 
       if (!db.claimedWallets.includes(normalizedAddress)) {
         db.claimedWallets.push(normalizedAddress);
-        db.currentUser.totalPoints += 75;
-        alertMsg += `\n+75 PTS connection reward awarded.`;
+        db.currentUser.totalPoints += 25; // Reduced Wallet connection reward to 25 PTS
+        alertMsg += `\n+25 PTS connection reward awarded.`;
       } else {
         alertMsg += `\n(Connection points already claimed previously for this wallet address.)`;
       }
@@ -1606,7 +1605,7 @@ function updateBudgetCalculations(){
   
   const solValue = (n / dynamicSolPrice).toFixed(4);
   const solEl = document.getElementById("calcSolCost");
-  if(solEl) solEl.textContent = `${solValue} SOL (Live: $${dynamicSolPrice}/SOL)`;
+  if(solEl) solEl.textContent = `${solValue} SOL`;
 }
 
 document.getElementById("cDuration").addEventListener("change", syncBudgetRules);
