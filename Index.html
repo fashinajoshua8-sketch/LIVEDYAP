@@ -1163,10 +1163,6 @@ async function checkXOAuthReturn() {
       }
     }
 
-    if (!verifiedUsername) {
-      verifiedUsername = prompt("X Authorization verified successfully!\nPlease enter your exact X (Twitter) handle to complete connection:", "");
-    }
-
     if (verifiedUsername) {
       const formattedHandle = "@" + verifiedUsername.replace("@","").trim();
       db.claimedXHandles = db.claimedXHandles || [];
