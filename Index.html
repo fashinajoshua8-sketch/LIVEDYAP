@@ -1595,6 +1595,8 @@ async function adminLogin(){
     document.getElementById("adminAuthBox").style.display = "none";
     document.getElementById("adminDashboard").style.display = "block";
     document.getElementById("adminKey").value = "";
+    
+    await loadGlobalCampaigns();
     renderAdminQueue();
   } else {
     alert("Unauthorized: Invalid administrative credentials.");
@@ -1609,10 +1611,11 @@ function adminLogout(){
   document.getElementById("adminDashboard").style.display = "none";
 }
 
-function renderAdminPanel(){
+async function renderAdminPanel(){
   if(isAdminLoggedIn){
     document.getElementById("adminAuthBox").style.display = "none";
     document.getElementById("adminDashboard").style.display = "block";
+    await loadGlobalCampaigns();
     renderAdminQueue();
   } else {
     document.getElementById("adminAuthBox").style.display = "block";
