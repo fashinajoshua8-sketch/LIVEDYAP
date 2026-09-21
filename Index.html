@@ -369,6 +369,13 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
           <input id="cBudget" type="number" step="1" value="10" required>
         </div>
       </div>
+      <div class="fee-box">
+        <div class="stat"><b id="calcTotal">$0</b><span class="small">Total Budget</span></div>
+        <div class="stat"><b id="calcFee">$0</b><span class="small">LIVED Fee (10%)</span></div>
+        <div class="stat"><b id="calcPool">$0</b><span class="small">Contributor Pool (90%)</span></div>
+      </div>
+      <div class="small" style="margin-top:-4px">Estimated cost: <b id="calcSolCost">0 SOL</b></div>
+
       <div class="row">
         <div>
           <label>Max Allowed Participants Cap</label>
@@ -641,6 +648,8 @@ if (!db.claimedXHandles) db.claimedXHandles = [];
 
 function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
 function esc(s){ return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
+function safeImg(s){ return /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/.test(String(s||"")) ? s : ""; }
+function safeUrl(s){ return /^https?:\/\//i.test(String(s||"")) ? s : "#"; }
 function money(n){ return "$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2}); }
 
 async function fetchLiveSolPrice() {
@@ -708,7 +717,7 @@ function renderCampaigns(){
     const yapperCount = c.yappers ? c.yappers.length : 0;
     const maxPart = c.maxParticipants || 'Unlimited';
     const topReward = c.topRewarded || 5;
-    const bannerImg = c.image ? `<img src="${c.image}" class="campaign-img" alt="${esc(c.name)}">` : '';
+    const bannerImg = c.image ? `<img src="${safeImg(c.image)}" class="campaign-img" alt="${esc(c.name)}">` : '';
 
     return `<article class="card campaign">
       ${bannerImg}
@@ -754,7 +763,7 @@ function openCampaign(id){
         <div class="small" style="font-weight:700;margin-bottom:8px;color:var(--brand2)">ENGAGEMENT TARGET LINKS:</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           ${c.targetLinks.map((url, i) => `
-            <a href="${esc(url)}" target="_blank" class="btn primary" style="font-size:13px;padding:8px 14px">🔗 Action Link #${i+1} ↗</a>
+            <a href="${esc(safeUrl(url))}" target="_blank" rel="noopener" class="btn primary" style="font-size:13px;padding:8px 14px">🔗 Action Link #${i+1} ↗</a>
           `).join("")}
         </div>
       </div>
@@ -763,7 +772,7 @@ function openCampaign(id){
 
   const heroBanner = c.image ? `
     <div style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid var(--line)">
-      <img src="${c.image}" style="width:100%;height:100%;object-fit:cover" alt="${esc(c.name)}">
+      <img src="${safeImg(c.image)}" style="width:100%;height:100%;object-fit:cover" alt="${esc(c.name)}">
     </div>
   ` : '';
   
@@ -846,26 +855,27 @@ function leaderboardHTML(c, pool){
   </table>`;
 }
 
-function joinCampaign(id){
+async function joinCampaign(id){
   const c = db.campaigns.find(x=>x.id===id); if(!c) return;
-  if(c.maxParticipants && c.yappers && c.yappers.length >= c.maxParticipants && !c.joined){
+  const list = c.yappers || [];
+  if(list.some(y => y[0] === db.currentUser.handle)){ c.joined = true; openCampaign(id); return; }
+  if(c.maxParticipants && list.length >= c.maxParticipants){
     alert("This campaign has reached its maximum participant capacity.");
     return;
   }
-  if(!c.joined){
-    c.joined = true;
-    c.yappers = c.yappers||[];
-    const assignedScore = Math.floor(70+Math.random()*22);
-    c.yappers.push([
-      db.currentUser.handle,
-      assignedScore,
-      Math.floor(2800+Math.random()*4200),
-      Math.floor(65+Math.random()*140)
-    ]);
-    db.currentUser.joinedCount += 1;
-    db.currentUser.totalPoints += assignedScore;
-    save();
-  }
+  const assignedScore = Math.floor(70+Math.random()*22);
+  const entry = [
+    db.currentUser.handle,
+    assignedScore,
+    Math.floor(2800+Math.random()*4200),
+    Math.floor(65+Math.random()*140)
+  ];
+  const { error } = await supabaseClient.rpc('join_campaign', { p_id: id, p_entry: entry });
+  if(error){ alert("Could not join campaign: " + error.message); return; }
+  db.currentUser.joinedCount += 1;
+  db.currentUser.totalPoints += assignedScore;
+  save();
+  await loadGlobalCampaigns();
   openCampaign(id);
 }
 
@@ -898,7 +908,7 @@ function renderDashboard(targetId){
       <div class="stat"><b>${(c.yappers?c.yappers.length:0)} / ${c.maxParticipants || '∞'}</b><span class="small">Participants Cap</span></div>
       <div class="stat"><b>${totalReach.toLocaleString()}</b><span class="small">Total Campaign Reach</span></div>
       <div class="stat"><b>${totalInteractions.toLocaleString()}</b><span class="small">Total Interactions</span></div>
-      <div class="stat"><b>${c.duration}</b><span class="small">Campaign Window</span></div>
+      <div class="stat"><b>${esc(c.duration)}</b><span class="small">Campaign Window</span></div>
     </div>
 
     <div class="card" style="margin-top:20px">
@@ -1317,15 +1327,13 @@ function syncBudgetRules(){
   updateBudgetCalculations();
 }
 
+function setText(id, txt){ const el = document.getElementById(id); if(el) el.textContent = txt; }
 function updateBudgetCalculations(){
   const n = Math.max(0, Number(document.getElementById("cBudget").value) || 0);
-  document.getElementById("calcTotal").textContent = money(n);
-  document.getElementById("calcFee").textContent = money(n * 0.1);
-  document.getElementById("calcPool").textContent = money(n * 0.9);
-  
-  const solValue = (n / dynamicSolPrice).toFixed(4);
-  const solEl = document.getElementById("calcSolCost");
-  if(solEl) solEl.textContent = `${solValue} SOL`;
+  setText("calcTotal", money(n));
+  setText("calcFee", money(n * 0.1));
+  setText("calcPool", money(n * 0.9));
+  setText("calcSolCost", `${(n / dynamicSolPrice).toFixed(4)} SOL`);
 }
 
 document.getElementById("cDuration").addEventListener("change", syncBudgetRules);
@@ -1574,37 +1582,31 @@ function exportCardImage(){
   }
 }
 
-const ADMIN_SALT = "lived_yaps_salt_2026";
-const ADMIN_HASH = "b8d08b1253357925a5d6df9e6483962a40a971466f19caaf33eb6f429bc0bf57";
+const ADMIN_EMAIL = "admin@livedproof.xyz"; // the admin user you create in Supabase Auth
 
-async function sha256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+async function restoreAdminSession(){
+  const { data } = await supabaseClient.auth.getSession();
+  isAdminLoggedIn = !!(data && data.session && data.session.user && data.session.user.email === ADMIN_EMAIL);
 }
 
 async function adminLogin(){
   const inputPass = document.getElementById("adminKey").value;
   if(!inputPass) return;
-
-  const computedHash = await sha256(inputPass + ":" + ADMIN_SALT);
-
-  if(computedHash === ADMIN_HASH){
-    isAdminLoggedIn = true;
-    document.getElementById("adminAuthBox").style.display = "none";
-    document.getElementById("adminDashboard").style.display = "block";
-    document.getElementById("adminKey").value = "";
-    
-    await loadGlobalCampaigns();
-    renderAdminQueue();
-  } else {
-    alert("Unauthorized: Invalid administrative credentials.");
-    document.getElementById("adminKey").value = "";
+  const { error } = await supabaseClient.auth.signInWithPassword({ email: ADMIN_EMAIL, password: inputPass });
+  document.getElementById("adminKey").value = "";
+  if(error){
+    alert("Unauthorized: " + error.message);
+    return;
   }
+  isAdminLoggedIn = true;
+  document.getElementById("adminAuthBox").style.display = "none";
+  document.getElementById("adminDashboard").style.display = "block";
+  await loadGlobalCampaigns();
+  renderAdminQueue();
 }
 
-function adminLogout(){
+async function adminLogout(){
+  await supabaseClient.auth.signOut();
   isAdminLoggedIn = false;
   document.getElementById("adminKey").value = "";
   document.getElementById("adminAuthBox").style.display = "block";
@@ -1630,7 +1632,7 @@ function renderAdminQueue(){
   } else {
     container.innerHTML = db.pendingRequests.map(item => `
       <div class="card" style="margin-bottom:14px;border:1px solid var(--line);display:flex;gap:16px;flex-direction:row;align-items:flex-start">
-        ${item.image ? `<img src="${item.image}" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">` : ''}
+        ${item.image ? `<img src="${safeImg(item.image)}" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">` : ''}
         <div style="flex:1">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
@@ -1676,7 +1678,7 @@ function renderAdminQueue(){
     activeContainer.innerHTML = db.campaigns.map(item => `
       <div class="card" style="margin-bottom:12px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
         <div style="display:flex;align-items:center;gap:12px">
-          ${item.image ? `<img src="${item.image}" style="width:48px;height:48px;object-fit:cover;border-radius:6px">` : ''}
+          ${item.image ? `<img src="${safeImg(item.image)}" style="width:48px;height:48px;object-fit:cover;border-radius:6px">` : ''}
           <div>
             <span class="badge">${esc(item.category)} · ${money(item.budget)}</span>
             <h4 style="margin:4px 0">${esc(item.name)}</h4>
@@ -1690,36 +1692,36 @@ function renderAdminQueue(){
 }
 
 async function acceptCampaignRequest(id){
-  const idx = db.pendingRequests.findIndex(x=>x.id===id);
-  if(idx===-1) return;
-  const approvedItem = db.pendingRequests.splice(idx,1)[0];
-  approvedItem.status = "ACTIVE";
-
-  await supabaseClient.from('campaigns').update({ status: 'ACTIVE' }).eq('id', id);
-
-  db.campaigns.unshift(approvedItem);
-  save();
+  const { data, error } = await supabaseClient.from('campaigns').update({ status: 'ACTIVE' }).eq('id', id).select();
+  if(error || !data || !data.length){
+    alert("Approval failed - the database rejected the update. " + (error ? error.message : "Check admin sign-in and RLS policies."));
+    return;
+  }
+  await loadGlobalCampaigns();
   renderAdminQueue();
   renderHome();
 }
 
 async function rejectCampaignRequest(id){
-  const idx = db.pendingRequests.findIndex(x=>x.id===id);
-  if(idx===-1) return;
-  db.pendingRequests.splice(idx,1);
-  await supabaseClient.from('campaigns').delete().eq('id', id);
-  save();
+  const { data, error } = await supabaseClient.from('campaigns').delete().eq('id', id).select();
+  if(error || !data || !data.length){
+    alert("Delete failed - the database rejected it. " + (error ? error.message : "Check admin sign-in and RLS policies."));
+    return;
+  }
+  await loadGlobalCampaigns();
   renderAdminQueue();
 }
 
 async function deleteActiveCampaign(id){
-  if(confirm("Are you sure you want to delete this active campaign?")) {
-    db.campaigns = db.campaigns.filter(x => x.id !== id);
-    await supabaseClient.from('campaigns').delete().eq('id', id);
-    save();
-    renderAdminQueue();
-    renderHome();
+  if(!confirm("Are you sure you want to delete this active campaign?")) return;
+  const { data, error } = await supabaseClient.from('campaigns').delete().eq('id', id).select();
+  if(error || !data || !data.length){
+    alert("Delete failed - the database rejected it. " + (error ? error.message : "Check admin sign-in and RLS policies."));
+    return;
   }
+  await loadGlobalCampaigns();
+  renderAdminQueue();
+  renderHome();
 }
 
 async function loadGlobalCampaigns() {
@@ -1749,7 +1751,8 @@ async function loadGlobalCampaigns() {
       status: c.status,
       payerWallet: c.payer_wallet,
       solPaid: c.sol_paid,
-      yappers: c.yappers || []
+      yappers: c.yappers || [],
+      joined: (c.yappers || []).some(y => y[0] === db.currentUser.handle)
     }));
 
     db.pendingRequests = data.filter(c => c.status === 'PENDING').map(c => ({
@@ -1784,11 +1787,14 @@ document.addEventListener("keydown", e => {
 });
 
 async function initApp() {
-  syncBudgetRules();
-  fetchLiveSolPrice();
-  await loadGlobalCampaigns();
-  renderLivedCard();
-  checkXOAuthReturn();
+  const safe = async (fn) => { try { await fn(); } catch(e){ console.error(fn.name, e); } };
+  await safe(restoreAdminSession);
+  await safe(loadGlobalCampaigns);   // feed first
+  await safe(syncBudgetRules);
+  await safe(renderHome);
+  await safe(renderLivedCard);
+  safe(fetchLiveSolPrice);
+  await safe(checkXOAuthReturn);
 }
 
 initApp();
