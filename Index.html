@@ -857,7 +857,10 @@ function openCampaign(id){
     ${leaderboardHTML(c, pool)}
     
     <div class="actions" style="margin-top:22px">
-      <button class="btn primary" onclick="joinCampaign(${c.id})">${c.joined?"Joined Campaign":"Join Campaign"}</button>
+      ${c.joined ? 
+        `<button class="btn danger" onclick="leaveCampaign(${c.id})">Exit Campaign</button>` : 
+        `<button class="btn primary" onclick="joinCampaign(${c.id})">Join Campaign</button>`
+      }
       <a href="https://discord.gg/y9WVFRrwt" target="_blank" class="btn discord">Join Campaign Discord ↗</a>
       <button class="btn" onclick="show('campaigns')">← Back to Directory</button>
     </div>
@@ -890,7 +893,7 @@ function leaderboardHTML(c, pool){
 
   return `<table class="leaderboard">
     <thead>
-      <tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th><th>Payout</th></tr>
+      <tr><th>Rank</th><th>Contributor</th><th>Lived Points</th><th>Reach</th><th>Interactions</th><th>Payout</th></tr>
     </thead>
     <tbody>${rows||'<tr><td colspan="6">No contributors joined yet.</td></tr>'}</tbody>
   </table>`;
@@ -915,6 +918,25 @@ async function joinCampaign(id){
   if(error){ alert("Could not join campaign: " + error.message); return; }
   db.currentUser.joinedCount += 1;
   db.currentUser.totalPoints += assignedScore;
+  save();
+  await loadGlobalCampaigns();
+  openCampaign(id);
+}
+
+async function leaveCampaign(id){
+  const c = db.campaigns.find(x => x.id === id); if(!c) return;
+  if(!confirm("Are you sure you want to exit this campaign? Your points for this campaign will be removed.")) return;
+
+  const existingEntry = (c.yappers || []).find(y => y[0] === db.currentUser.handle);
+  const deductedPoints = existingEntry ? existingEntry[1] : 0;
+
+  const { error } = await supabaseClient.rpc('leave_campaign', { p_id: id, p_handle: db.currentUser.handle });
+  if(error){ alert("Could not exit campaign: " + error.message); return; }
+
+  db.currentUser.joinedCount = Math.max(0, db.currentUser.joinedCount - 1);
+  db.currentUser.totalPoints = Math.max(0, db.currentUser.totalPoints - deductedPoints);
+  c.joined = false;
+  
   save();
   await loadGlobalCampaigns();
   openCampaign(id);
@@ -1708,48 +1730,6 @@ function renderAdminQueue(){
     `).join("");
   }
 }
-
-function openEditModal(id){
-  const c = db.campaigns.find(x => x.id === id) || db.pendingRequests.find(x => x.id === id);
-  if(!c) return;
-  document.getElementById("editCampaignId").value = c.id;
-  document.getElementById("editCName").value = c.name;
-  document.getElementById("editCCategory").value = c.category;
-  document.getElementById("editCBudget").value = c.budget;
-  document.getElementById("editCMax").value = c.maxParticipants || 50;
-  document.getElementById("editCTop").value = c.topRewarded || 5;
-  document.getElementById("editCBrief").value = c.brief;
-  document.getElementById("editCRequirements").value = c.requirements || "";
-  document.getElementById("editCampaignModal").classList.add("active");
-}
-
-function closeEditModal(){
-  document.getElementById("editCampaignModal").classList.remove("active");
-}
-
-document.getElementById("editCampaignForm").addEventListener("submit", async function(e){
-  e.preventDefault();
-  const id = Number(document.getElementById("editCampaignId").value);
-  const updatedData = {
-    name: document.getElementById("editCName").value.trim(),
-    category: document.getElementById("editCCategory").value,
-    budget: Number(document.getElementById("editCBudget").value),
-    max_participants: Number(document.getElementById("editCMax").value),
-    top_rewarded: Number(document.getElementById("editCTop").value),
-    brief: document.getElementById("editCBrief").value.trim(),
-    requirements: document.getElementById("editCRequirements").value.trim()
-  };
-
-  const { error } = await supabaseClient.from('campaigns').update(updatedData).eq('id', id);
-  if(error){
-    alert("Failed to update campaign: " + error.message);
-    return;
-  }
-  closeEditModal();
-  await loadGlobalCampaigns();
-  renderAdminQueue();
-  alert("Campaign updated successfully!");
-});
 
 async function acceptCampaignRequest(id){
   const { data, error } = await supabaseClient.from('campaigns').update({ status: 'ACTIVE' }).eq('id', id).select();
