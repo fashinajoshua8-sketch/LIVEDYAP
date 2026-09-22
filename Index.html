@@ -280,6 +280,31 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
   </div>
 </div>
 
+<!-- EDIT CAMPAIGN MODAL (Includes Requirements Field) -->
+<div class="modal-overlay" id="editCampaignModal">
+  <div class="modal-card" style="max-width:550px;text-align:left">
+    <h3 style="margin-top:0">Edit Campaign</h3>
+    <form id="editCampaignForm" class="form" style="margin-top:15px">
+      <input type="hidden" id="editCampaignId">
+      <div><label>Project / Campaign Name</label><input id="editCName" required></div>
+      <div class="row">
+        <div><label>Category</label><select id="editCCategory"><option>DeFi</option><option>Memecoin</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
+        <div><label>Total Budget (USD)</label><input id="editCBudget" type="number" required></div>
+      </div>
+      <div class="row">
+        <div><label>Max Participants Cap</label><input id="editCMax" type="number" required></div>
+        <div><label>Top Rewarded Cutoff</label><input id="editCTop" type="number" required></div>
+      </div>
+      <div><label>Campaign Objective & Brief</label><textarea id="editCBrief" required></textarea></div>
+      <div><label>Participation Requirements</label><input id="editCRequirements" required></div>
+      <div class="actions" style="margin-top:15px;justify-content:flex-end">
+        <button type="button" class="btn" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="btn primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <main class="shell">
 
 <section id="home" class="view active">
@@ -652,6 +677,16 @@ function safeImg(s){ return /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]
 function safeUrl(s){ return /^https?:\/\//i.test(String(s||"")) ? s : "#"; }
 function money(n){ return "$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2}); }
 
+// Helper function to extract domain and display a favicon logo next to engagement links
+function getFaviconLogo(url) {
+  try {
+    const parsed = new URL(url);
+    return `https://www.google.com/s2/favicons?domain=${parsed.hostname}&sz=32`;
+  } catch (e) {
+    return "";
+  }
+}
+
 async function fetchLiveSolPrice() {
   try {
     const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
@@ -762,9 +797,15 @@ function openCampaign(id){
       <div style="margin:16px 0">
         <div class="small" style="font-weight:700;margin-bottom:8px;color:var(--brand2)">ENGAGEMENT TARGET LINKS:</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          ${c.targetLinks.map((url, i) => `
-            <a href="${esc(safeUrl(url))}" target="_blank" rel="noopener" class="btn primary" style="font-size:13px;padding:8px 14px">🔗 Action Link #${i+1} ↗</a>
-          `).join("")}
+          ${c.targetLinks.map((url, i) => {
+            const favicon = getFaviconLogo(url);
+            return `
+              <a href="${esc(safeUrl(url))}" target="_blank" rel="noopener" class="btn primary" style="font-size:13px;padding:8px 14px;display:inline-flex;align-items:center;gap:8px">
+                ${favicon ? `<img src="${favicon}" alt="" style="width:16px;height:16px;object-fit:contain;border-radius:2px">` : ''}
+                Action Link #${i+1} ↗
+              </a>
+            `;
+          }).join("")}
         </div>
       </div>
     `;
@@ -1659,11 +1700,56 @@ function renderAdminQueue(){
             <span class="small">Participants: ${item.yappers ? item.yappers.length : 0} / ${item.maxParticipants || '∞'} · Top ${item.topRewarded || 5} Split Pool</span>
           </div>
         </div>
-        <button class="btn danger" onclick="deleteActiveCampaign(${item.id})">Delete Campaign</button>
+        <div class="actions">
+          <button class="btn sm primary" onclick="openEditModal(${item.id})">Edit</button>
+          <button class="btn sm danger" onclick="deleteActiveCampaign(${item.id})">Delete</button>
+        </div>
       </div>
     `).join("");
   }
 }
+
+function openEditModal(id){
+  const c = db.campaigns.find(x => x.id === id) || db.pendingRequests.find(x => x.id === id);
+  if(!c) return;
+  document.getElementById("editCampaignId").value = c.id;
+  document.getElementById("editCName").value = c.name;
+  document.getElementById("editCCategory").value = c.category;
+  document.getElementById("editCBudget").value = c.budget;
+  document.getElementById("editCMax").value = c.maxParticipants || 50;
+  document.getElementById("editCTop").value = c.topRewarded || 5;
+  document.getElementById("editCBrief").value = c.brief;
+  document.getElementById("editCRequirements").value = c.requirements || "";
+  document.getElementById("editCampaignModal").classList.add("active");
+}
+
+function closeEditModal(){
+  document.getElementById("editCampaignModal").classList.remove("active");
+}
+
+document.getElementById("editCampaignForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const id = Number(document.getElementById("editCampaignId").value);
+  const updatedData = {
+    name: document.getElementById("editCName").value.trim(),
+    category: document.getElementById("editCCategory").value,
+    budget: Number(document.getElementById("editCBudget").value),
+    max_participants: Number(document.getElementById("editCMax").value),
+    top_rewarded: Number(document.getElementById("editCTop").value),
+    brief: document.getElementById("editCBrief").value.trim(),
+    requirements: document.getElementById("editCRequirements").value.trim()
+  };
+
+  const { error } = await supabaseClient.from('campaigns').update(updatedData).eq('id', id);
+  if(error){
+    alert("Failed to update campaign: " + error.message);
+    return;
+  }
+  closeEditModal();
+  await loadGlobalCampaigns();
+  renderAdminQueue();
+  alert("Campaign updated successfully!");
+});
 
 async function acceptCampaignRequest(id){
   const { data, error } = await supabaseClient.from('campaigns').update({ status: 'ACTIVE' }).eq('id', id).select();
