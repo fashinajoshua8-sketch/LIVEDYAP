@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIVED PROOF — Web3 Engagement, Identity & Admin Hub</title>
+<title>LIVED PROOF — Web3 Engagement, Identity & Admin Hub (V2)</title>
 
 <!-- Solana Web3 Browser Bundle -->
 <script src="https://unpkg.com/@solana/web3.js@1.95.8/lib/index.iife.min.js"></script>
 <!-- Supabase JS Client CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Cloudflare Turnstile API Script -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
 :root{
@@ -186,7 +188,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 
 <nav>
   <div class="shell navin">
-    <a class="logo" href="#" onclick="show('home');return false">LIVED <span>PROOF</span></a>
+    <a class="logo" href="#" onclick="show('home');return false">LIVED <span>PROOF V2</span></a>
     <div class="navlinks">
       <button type="button" data-view="home" class="active">Home</button>
       <button type="button" data-view="campaigns">Campaigns</button>
@@ -869,18 +871,21 @@ function openCampaign(id){
 
 function leaderboardHTML(c, pool){
   const yList = (c.yappers||[]).slice().sort((a,b)=>b[1]-a[1]);
-  const cutoff = c.topRewarded || 5;
 
   const rows = yList.map((y,i)=>{
     const badge = i === 0 ? '👑 #1' : `#${i+1}`;
+    const payoutVal = y[4] !== undefined ? Number(y[4]) : null;
+    const payoutDisplay = payoutVal !== null ? `$${payoutVal.toFixed(2)}` : "$0.00";
+    const statusDisplay = payoutVal !== null ? `<span style="color:var(--good)">Verified Payout</span>` : `<span class="small" style="color:var(--brand2)">(Pending Bot Audit)</span>`;
+
     return `<tr>
       <td class="rank">${badge}</td>
       <td><span class="avatar">${esc(y[0].replace("@","").slice(0,2).toUpperCase())}</span>${esc(y[0])}</td>
       <td class="score">${y[1]}</td>
-      <td>${Number(y[2]).toLocaleString()}</td>
-      <td>${Number(y[3]).toLocaleString()}</td>
-      <td style="color:var(--muted);font-weight:700">
-        $0.00 <span class="small" style="font-size:10px;display:block;color:var(--brand2)">(Pending Bot Audit)</span>
+      <td>${Number(y[2] || 0).toLocaleString()}</td>
+      <td>${Number(y[3] || 0).toLocaleString()}</td>
+      <td style="color:var(--fg);font-weight:700">
+        ${payoutDisplay} <br>${statusDisplay}
       </td>
     </tr>`;
   }).join("");
@@ -1655,6 +1660,46 @@ async function renderAdminPanel(){
     document.getElementById("adminDashboard").style.display = "none";
   }
 }
+
+function openEditModal(id){
+  const c = db.campaigns.find(x => x.id === id) || (db.pendingRequests || []).find(x => x.id === id);
+  if(!c) return;
+  document.getElementById("editCampaignId").value = c.id;
+  document.getElementById("editCName").value = c.name;
+  document.getElementById("editCCategory").value = c.category;
+  document.getElementById("editCBudget").value = c.budget;
+  document.getElementById("editCMax").value = c.maxParticipants || 50;
+  document.getElementById("editCTop").value = c.topRewarded || 5;
+  document.getElementById("editCBrief").value = c.brief;
+  document.getElementById("editCRequirements").value = c.requirements || "";
+  document.getElementById("editCampaignModal").classList.add("active");
+}
+
+function closeEditModal(){
+  document.getElementById("editCampaignModal").classList.remove("active");
+}
+
+document.getElementById("editCampaignForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const id = Number(document.getElementById("editCampaignId").value);
+  const updatedData = {
+    name: document.getElementById("editCName").value.trim(),
+    category: document.getElementById("editCCategory").value,
+    budget: Number(document.getElementById("editCBudget").value),
+    max_participants: Number(document.getElementById("editCMax").value),
+    top_rewarded: Number(document.getElementById("editCTop").value),
+    brief: document.getElementById("editCBrief").value.trim(),
+    requirements: document.getElementById("editCRequirements").value.trim()
+  };
+
+  const { error } = await supabaseClient.from('campaigns').update(updatedData).eq('id', id);
+  if(error){ alert("Update failed: " + error.message); return; }
+
+  closeEditModal();
+  alert("Campaign updated successfully!");
+  await loadGlobalCampaigns();
+  renderAdminQueue();
+});
 
 function renderAdminQueue(){
   const container = document.getElementById("pendingList");
