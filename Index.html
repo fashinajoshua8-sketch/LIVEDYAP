@@ -869,15 +869,9 @@ function openCampaign(id){
 
 function leaderboardHTML(c, pool){
   const yList = (c.yappers||[]).slice().sort((a,b)=>b[1]-a[1]);
-  const p = pool || Number(c.budget)*0.9;
   const cutoff = c.topRewarded || 5;
 
-  const eligibleYappers = yList.slice(0, cutoff);
-  const eligibleScoreTotal = eligibleYappers.reduce((acc, y) => acc + y[1], 0) || 1;
-
   const rows = yList.map((y,i)=>{
-    const isRewarded = i < cutoff;
-    const share = isRewarded ? (p * (y[1] / eligibleScoreTotal)) : 0;
     const badge = i === 0 ? '👑 #1' : `#${i+1}`;
     return `<tr>
       <td class="rank">${badge}</td>
@@ -885,17 +879,17 @@ function leaderboardHTML(c, pool){
       <td class="score">${y[1]}</td>
       <td>${Number(y[2]).toLocaleString()}</td>
       <td>${Number(y[3]).toLocaleString()}</td>
-      <td style="color:${isRewarded ? 'var(--good)' : 'var(--muted)'};font-weight:700">
-        ${isRewarded ? money(share) : '<span class="small" style="color:var(--muted)">Outside Top ' + cutoff + '</span>'}
+      <td style="color:var(--muted);font-weight:700">
+        $0.00 <span class="small" style="font-size:10px;display:block;color:var(--brand2)">(Pending Bot Audit)</span>
       </td>
     </tr>`;
   }).join("");
 
   return `<table class="leaderboard">
     <thead>
-      <tr><th>Rank</th><th>Contributor</th><th>Lived Points</th><th>Reach</th><th>Interactions</th><th>Payout</th></tr>
+      <tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th><th>Payout</th></tr>
     </thead>
-    <tbody>${rows||'<tr><td colspan="6">No contributors joined yet.</td></tr>'}</tbody>
+    <tbody>${rows||'<tr><td colspan="6">No contributors joined yet. All entries start at 0 pending verification.</td></tr>'}</tbody>
   </table>`;
 }
 
@@ -907,12 +901,12 @@ async function joinCampaign(id){
     alert("This campaign has reached its maximum participant capacity.");
     return;
   }
-  const assignedScore = Math.floor(70+Math.random()*22);
+  const assignedScore = 0;
   const entry = [
     db.currentUser.handle,
     assignedScore,
-    Math.floor(2800+Math.random()*4200),
-    Math.floor(65+Math.random()*140)
+    0,
+    0
   ];
   const { error } = await supabaseClient.rpc('join_campaign', { p_id: id, p_entry: entry });
   if(error){ alert("Could not join campaign: " + error.message); return; }
