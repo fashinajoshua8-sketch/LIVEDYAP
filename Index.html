@@ -856,12 +856,15 @@ function openCampaign(id){
 
 function leaderboardHTML(c, pool, currencyLabel="SOL"){
   const yList = (c.yappers||[]).slice().sort((a,b)=>b[1]-a[1]);
+  const topCutoff = c.topRewarded || 5;
+  const individualShare = topCutoff > 0 ? (pool / topCutoff) : 0;
 
   const rows = yList.map((y,i)=>{
     const badge = i === 0 ? '👑 #1' : `#${i+1}`;
-    const payoutVal = y[4] !== undefined && y[4] !== null ? Number(y[4]) : null;
-    const payoutDisplay = payoutVal !== null ? `${payoutVal.toFixed(2)} ${currencyLabel}` : `0.00 ${currencyLabel}`;
-    const statusDisplay = payoutVal !== null ? `<span style="color:var(--good)">Verified Payout</span>` : `<span class="small" style="color:var(--brand2)">(Pending Bot Audit)</span>`;
+    const isEligible = i < topCutoff && y[1] > 0;
+    const payoutVal = isEligible ? individualShare : 0.00;
+    const payoutDisplay = `${payoutVal.toFixed(2)} ${currencyLabel}`;
+    const statusDisplay = isEligible ? `<span style="color:var(--good)">Eligible for Payout</span>` : `<span class="small" style="color:var(--muted)">Outside Top ${topCutoff} Cutoff</span>`;
 
     return `<tr>
       <td class="rank">${badge}</td>
@@ -877,9 +880,9 @@ function leaderboardHTML(c, pool, currencyLabel="SOL"){
 
   return `<table class="leaderboard">
     <thead>
-      <tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th><th>Payout (${currencyLabel})</th></tr>
+      <tr><th>Rank</th><th>Contributor</th><th>Score</th><th>Reach</th><th>Interactions</th><th>Estimated Payout (${currencyLabel})</th></tr>
     </thead>
-    <tbody>${rows||'<tr><td colspan="6">No contributors joined yet. All entries start at 0 pending verification.</td></tr>'}</tbody>
+    <tbody>${rows||'<tr><td colspan="6">No contributors joined yet. All entries start at 0.</td></tr>'}</tbody>
   </table>`;
 }
 
