@@ -203,86 +203,46 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
       <button type="button" data-view="rules">Rules</button>
     </div>
   </div>
-</nav>
+</main>
 
-<!-- WALLET SELECTION MODAL WITH OFFICIAL 24x24 PRODUCTION LOGOS -->
+<!-- SUBMIT POST MODAL WITH TURNSTILE -->
+<div class="modal-overlay" id="submitPostModal">
+  <div class="modal-card" style="max-width:460px;text-align:left">
+    <h3 style="margin-top:0">Submit Campaign Post</h3>
+    <p class="small">Paste your X post URL below. Automated bot verification will pull metrics, check duplicates, and update scores.</p>
+    <form id="submitPostForm" class="form" style="margin-top:15px">
+      <input type="hidden" id="targetCampaignId">
+      <div><label>X Post URL</label><input type="url" id="postUrlInput" placeholder="https://x.com/username/status/..." required></div>
+      <div style="margin:10px 0">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAE-placeholder-key" id="turnstileWidget"></div>
+      </div>
+      <div class="actions" style="margin-top:15px;justify-content:flex-end">
+        <button type="button" class="btn" onclick="closeSubmitModal()">Cancel</button>
+        <button type="submit" class="btn primary" id="submitPostBtn">Verify & Submit Post →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- WALLET SELECTION MODAL -->
 <div class="modal-overlay" id="walletModal">
   <div class="modal-card">
     <h3 style="margin-top:0">Connect Solana Wallet</h3>
-    <p class="small">Choose your primary Solana wallet provider to approve live signature verification.</p>
     <div style="margin-top:20px;display:grid;gap:10px">
-      
-      <!-- Phantom -->
       <button type="button" class="wallet-option" onclick="requestLiveWallet('phantom')">
         <div style="display:flex;align-items:center;gap:12px">
           <div class="wallet-icon-frame">
-            <img
-              src="https://cdn.jsdelivr.net/npm/solana-icons@latest/svg/wallets/phantom.svg"
-              alt="Phantom"
-              class="wallet-icon"
-              loading="lazy"
-            />
+            <img src="https://cdn.jsdelivr.net/npm/solana-icons@latest/svg/wallets/phantom.svg" alt="Phantom" class="wallet-icon" loading="lazy"/>
           </div>
           <span style="font-size:15px;font-weight:700">Phantom</span>
         </div>
-        <span class="small" style="color:var(--brand2);font-weight:800">Popular</span>
       </button>
-
-      <!-- Solflare -->
-      <button type="button" class="wallet-option" onclick="requestLiveWallet('solflare')">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="wallet-icon-frame">
-            <img
-              src="https://cdn.jsdelivr.net/npm/solana-icons@latest/svg/wallets/solflare.svg"
-              alt="Solflare"
-              class="wallet-icon"
-              loading="lazy"
-            />
-          </div>
-          <span style="font-size:15px;font-weight:700">Solflare</span>
-        </div>
-        <span class="small" style="color:var(--muted)">Direct</span>
-      </button>
-
-      <!-- Glow -->
-      <button type="button" class="wallet-option" onclick="requestLiveWallet('glow')">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="wallet-icon-frame">
-            <img
-              src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/glow/glow.svg"
-              alt="Glow"
-              class="wallet-icon"
-              loading="lazy"
-              onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 128 128\'><rect width=\'128\' height=\'128\' rx=\'28\' fill=\'%23151221\'/><path d=\'M64 22C40.8 22 22 40.8 22 64C22 87.2 40.8 106 64 106C87.2 106 106 87.2 106 64C106 40.8 87.2 22 64 22ZM64 38C78.4 38 90 49.6 90 64C90 78.4 78.4 90 64 90C49.6 90 38 78.4 38 64C38 49.6 49.6 38 64 38Z\' fill=\'%23FF6A00\'/><circle cx=\'64\' cy=\'64\' r=\'15\' fill=\'%23FFC857\'/></svg>';"
-            />
-          </div>
-          <span style="font-size:15px;font-weight:700">Glow</span>
-        </div>
-        <span class="small" style="color:var(--muted)">Mobile</span>
-      </button>
-
-      <!-- Jupiter -->
-      <button type="button" class="wallet-option" onclick="requestLiveWallet('jupiter')">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="wallet-icon-frame">
-            <img
-              src="https://cryptologos.cc/logos/jupiter-ag-jup-logo.svg"
-              alt="Jupiter"
-              class="wallet-icon"
-              loading="lazy"
-            />
-          </div>
-          <span style="font-size:15px;font-weight:700">Jupiter</span>
-        </div>
-        <span class="small" style="color:var(--muted)">Unified</span>
-      </button>
-
     </div>
     <button type="button" class="btn" style="margin-top:20px;width:100%" onclick="closeWalletModal()">Cancel</button>
   </div>
 </div>
 
-<!-- EDIT CAMPAIGN MODAL (Includes Requirements Field) -->
+<!-- EDIT CAMPAIGN MODAL -->
 <div class="modal-overlay" id="editCampaignModal">
   <div class="modal-card" style="max-width:550px;text-align:left">
     <h3 style="margin-top:0">Edit Campaign</h3>
@@ -329,7 +289,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
       <div class="metric"><span>Total Campaign Budget</span><b>100%</b></div>
       <div class="metric"><span>LIVED Protocol Fee</span><b>10%</b></div>
       <div class="metric"><span>Contributor Pool</span><b>90%</b></div>
-      <div class="notice">Campaigns require admin validation before distribution. Anti-abuse limits safeguard reward pools.</div>
+      <div class="notice">Automated bot verification active. X metrics pull points instantly.</div>
     </div>
   </div>
   <div class="stats">
@@ -364,15 +324,12 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
   <div class="panel">
     <div class="kicker">Project portal</div>
     <h2>Submit a Campaign Request</h2>
-    <p>Set campaign parameters, upload artwork banner, and prepare your manual treasury funding step.</p>
-    
     <form id="campaignForm" class="form">
       <div class="row">
         <div><label>Project / Campaign Name</label><input id="cName" required placeholder="e.g. NOVA Community Push"></div>
         <div><label>Category</label><select id="cCategory"><option>DeFi</option><option>Memecoin</option><option>AI</option><option>Infrastructure</option><option>NFT</option></select></div>
       </div>
 
-      <!-- Campaign Image Upload Field -->
       <div>
         <label>Campaign Banner Image (Upload .PNG, .JPG, or .WEBP)</label>
         <input type="file" id="cImageFile" accept="image/png, image/jpeg, image/webp" onchange="handleImageUploadPreview(event)">
@@ -414,7 +371,6 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
         </div>
       </div>
 
-      <!-- Multiple Engagement Links Area -->
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
           <label>Target Engagement Links (Tweets, Threads, Tasks)</label>
@@ -836,6 +792,10 @@ function openCampaign(id){
     <div class="metric"><span>Requirements</span><span class="small">${esc(c.requirements||'Open to all verified creators.')}</span></div>
     
     ${linksHtml}
+
+    <div style="margin:20px 0">
+      <button class="btn primary" onclick="openSubmitPostModal(${c.id})">📤 Submit X Post for Automated Points</button>
+    </div>
     
     ${topOne ? `
       <div class="top-podium" style="margin-top:20px">
@@ -874,7 +834,7 @@ function leaderboardHTML(c, pool){
 
   const rows = yList.map((y,i)=>{
     const badge = i === 0 ? '👑 #1' : `#${i+1}`;
-    const payoutVal = y[4] !== undefined ? Number(y[4]) : null;
+    const payoutVal = y[4] !== undefined && y[4] !== null ? Number(y[4]) : null;
     const payoutDisplay = payoutVal !== null ? `$${payoutVal.toFixed(2)}` : "$0.00";
     const statusDisplay = payoutVal !== null ? `<span style="color:var(--good)">Verified Payout</span>` : `<span class="small" style="color:var(--brand2)">(Pending Bot Audit)</span>`;
 
@@ -911,7 +871,8 @@ async function joinCampaign(id){
     db.currentUser.handle,
     assignedScore,
     0,
-    0
+    0,
+    null
   ];
   const { error } = await supabaseClient.rpc('join_campaign', { p_id: id, p_entry: entry });
   if(error){ alert("Could not join campaign: " + error.message); return; }
@@ -940,6 +901,68 @@ async function leaveCampaign(id){
   await loadGlobalCampaigns();
   openCampaign(id);
 }
+
+// AUTOMATED POST SUBMISSION MODAL LOGIC
+function openSubmitPostModal(campaignId) {
+  if (!db.currentUser.xHandle) {
+    alert("Please connect your X account first before submitting posts!");
+    redirectToXOAuth();
+    return;
+  }
+  document.getElementById("targetCampaignId").value = campaignId;
+  document.getElementById("postUrlInput").value = "";
+  document.getElementById("submitPostModal").classList.add("active");
+}
+
+function closeSubmitModal() {
+  document.getElementById("submitPostModal").classList.remove("active");
+}
+
+document.getElementById("submitPostForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const campaignId = Number(document.getElementById("targetCampaignId").value);
+  const postUrl = document.getElementById("postUrlInput").value.trim();
+  const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+
+  if (!turnstileToken) {
+    alert("Please complete the Turnstile bot verification check.");
+    return;
+  }
+
+  const btn = document.getElementById("submitPostBtn");
+  btn.textContent = "Verifying & Pulling Metrics...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-submission`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+      body: JSON.stringify({
+        campaignId: campaignId,
+        postUrl: postUrl,
+        handle: db.currentUser.handle,
+        turnstileToken: turnstileToken
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Submission verification failed.");
+    }
+
+    alert(`🎉 Post Verified Successfully!\n+${data.score} PTS added to your score.`);
+    db.currentUser.totalPoints += data.score;
+    save();
+    closeSubmitModal();
+    await loadGlobalCampaigns();
+    openCampaign(campaignId);
+  } catch (err) {
+    alert("Error: " + err.message);
+  } finally {
+    btn.textContent = "Verify & Submit Post →";
+    btn.disabled = false;
+  }
+});
 
 function renderDashboard(targetId){
   const activeCampaigns = db.campaigns.filter(c=>c.status==="ACTIVE");
@@ -1803,6 +1826,26 @@ async function deleteActiveCampaign(id){
   renderHome();
 }
 
+async function checkAndRunAudits(campaignsList) {
+  const now = new Date().getTime();
+  for (const c of campaignsList) {
+    if (c.status === 'ACTIVE') {
+      const createdTime = new Date(c.created_at || Date.now()).getTime();
+      const durationDays = parseInt(c.duration) || 7;
+      const expiryTime = createdTime + (durationDays * 24 * 60 * 60 * 1000);
+      
+      if (now >= expiryTime) {
+        const { error } = await supabaseClient.rpc('distribute_campaign_payouts', { p_campaign_id: c.id });
+        if (error) {
+          console.error(`Failed to auto-audit campaign ${c.id}:`, error.message);
+        } else {
+          console.log(`Campaign ${c.id} successfully audited and payout distributed.`);
+        }
+      }
+    }
+  }
+}
+
 async function loadGlobalCampaigns() {
   const { data, error } = await supabaseClient
     .from('campaigns')
@@ -1815,7 +1858,16 @@ async function loadGlobalCampaigns() {
   }
 
   if (data) {
-    db.campaigns = data.filter(c => c.status === 'ACTIVE').map(c => ({
+    await checkAndRunAudits(data);
+
+    const { data: refreshedData } = await supabaseClient
+      .from('campaigns')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    const sourceData = refreshedData || data;
+
+    db.campaigns = sourceData.filter(c => c.status === 'ACTIVE' || c.status === 'COMPLETED').map(c => ({
       id: Number(c.id),
       name: c.name,
       category: c.category,
@@ -1834,7 +1886,7 @@ async function loadGlobalCampaigns() {
       joined: (c.yappers || []).some(y => y[0] === db.currentUser.handle)
     }));
 
-    db.pendingRequests = data.filter(c => c.status === 'PENDING').map(c => ({
+    db.pendingRequests = sourceData.filter(c => c.status === 'PENDING').map(c => ({
       id: Number(c.id),
       name: c.name,
       category: c.category,
